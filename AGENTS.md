@@ -19,7 +19,7 @@ product — not a scaffold with TODOs.
 | | **You (agent)** | **User (web client)** |
 | --- | --- | --- |
 | Where | This Linux sandbox (`/workspace`) | Grok chat UI in their browser |
-| Can do | Run tools, edit files, start servers, curl, Playwright | Chat with you; watch a **live preview** of the app |
+| Can do | Run tools, edit files, start servers, curl, agent-browser | Chat with you; watch a **live preview** of the app |
 | Access to the other side | You never see their browser/desktop | They **cannot** run commands, open your terminal, or browse `/workspace` |
 | How they see the app | You serve it on **`0.0.0.0:8080`** in this sandbox | A preview proxy auto-discovers that server and streams it into a **live preview** in the web client |
 
@@ -49,7 +49,7 @@ broken, or ugly, that is their whole experience.
 | Working directory | `/workspace` (project root) |
 | OS | Linux container, **Node 22** (not the user's OS) |
 | App must listen on | **`0.0.0.0:8080`** — how the live preview finds your app |
-| How you check the app | `http://127.0.0.1:8080` **from inside this container** (curl / browser tools / Playwright) |
+| How you check the app | `http://127.0.0.1:8080` **from inside this container** (curl / agent-browser) |
 | How the **user** sees the app | Live preview in the **web client** (automatic once something serves on 8080) — not a URL you invent for them |
 | Auth / CLI | `grok` + credentials injected for you |
 | Persistence | Sandbox may be **stopped, restarted, or replaced**; `/workspace` is your app state for this run |
@@ -110,8 +110,8 @@ revive and live work stay identical.
   `package.json` is fair game (`date-fns`, `tw-animate-css`,
   `class-variance-authority`, `@tanstack/react-table`, …) — check it before
   assuming something is missing.
-- **Playwright + Chromium** — installed for **you** to open and exercise the
-  running app (see §3).
+- **agent-browser** — installed for **you** to open and exercise the
+  running app (see §3). **Never use Playwright** — agent-browser is the only browser QA tool.
 - **`screenshots/`** — write agent QA screenshots here (never under `/tmp`).
 - **`vite.config.ts` + `tsconfig.json`** — preconfigured (preview port
   contract, Vercel build preset, strict TS with `@/*` → `src/*`). Edit if you
@@ -129,7 +129,7 @@ revive and live work stay identical.
 | Allowed | Not available |
 | --- | --- |
 | `npm install` / `npm i` for **JS packages** (registry works). Prefer packages already in `package.json` when possible. | **`apt` / `apt-get` / `yum` / system package managers** — do not try; they will not work here |
-| Node 22, Playwright Chromium (for your QA), preinstalled app deps | OS-level libs, compilers, or native toolchains via the shell |
+| Node 22, agent-browser (for your QA), preinstalled app deps | OS-level libs, compilers, or native toolchains via the shell |
 | Docs / web search for APIs and how-tos | Trial-and-error install loops when something is missing — search first, then use an npm or pure-browser approach |
 
 - Need a JS dependency (including game engines like `three` / Phaser) → **npm**
@@ -307,7 +307,7 @@ npm run build
 npm run typecheck
 ```
 
-Helper for visual smoke (preinstalled Playwright):
+Helper for visual smoke (**agent-browser only** — never Playwright):
 
 ```bash
 # Ships in the workspace at scripts/browser-smoke.mjs:
@@ -429,7 +429,7 @@ If the shared contract isn’t ready, stay sequential.
 4. **Verify yourself, before the user sees it** — the preview shows whatever you
    produce, and the user uses web preview, not your localhost:
    - At least **HTTP:** `curl -sf http://127.0.0.1:8080/`.
-   - Prefer also loading the page in a **browser tool / Playwright** and looking
+   - Prefer also loading the page in **agent-browser** and looking
      at it.
    - **Games with movement:** a still frame is not enough — confirm **A = left /
      D = right** while moving forward (see `controls` skill self-test). Flip one
@@ -448,7 +448,7 @@ it is **not** the user's Grok chat tab.
 1. **Grok browser / computer-use / MCP browser tools** if listed — open
    `http://127.0.0.1:8080`, glance at the UI, screenshot if supported.
 2. **`web_fetch`** on that URL for an HTML-only check.
-3. **Playwright helper (preinstalled)** — simple load + screenshot.
+3. **agent-browser helper (default, only)** — simple load + screenshot. Never Playwright.
    **Always write QA screenshots under `/workspace/screenshots/` — never `/tmp`
    or anywhere outside the workspace.** The helper defaults there; pass an
    explicit path only if you need a different name under that directory.
@@ -508,7 +508,8 @@ you:       agent in a Linux sandbox, cwd /workspace
 user:      web client only — no sandbox shell, no local Docker, no terminal
 startup:   OWN /workspace/startup.sh — platform re-runs it after hibernate/revive
 serve:     startup.sh / npm run dev  →  bind 0.0.0.0:8080  (live preview)
-verify:    YOU drive curl / browser tools / browser-smoke.mjs inside the sandbox
+verify:    YOU drive agent-browser (scripts/browser-smoke.mjs) inside the sandbox — never Playwright
+
 controls:  WASD/vehicle/flight → .grok/skills/controls/SKILL.md; A=left self-test
 sprites:   doctrine → game-asset-core+specialist; pipeline → generate2dsprite (#FF00FF); maps → generate2dmap; dense motion → video2dsprite
 shots:     write QA PNGs under /workspace/screenshots/ — never /tmp

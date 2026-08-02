@@ -25,3 +25,12 @@ vendor/
 rust-server/target/
 **/target/
 dist-static/
+
+# Deploy scratch payloads (never commit)
+.deploy-tiny-*.json
+.vercel-deploy-*.json
+.vercel-mcp-args.json
+vercel-deploy-payload.json
+vercel-aio-payload.json
+deploy-*.json
+vercel-*-payload.json
