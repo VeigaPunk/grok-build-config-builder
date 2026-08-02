@@ -110,6 +110,8 @@
     if ((schema.product || "") === "codex") {
       out += "[profiles.titanium]\n";
       if (en.has("model") && values.model) out += "model = " + JSON.stringify(String(values.model)) + "\n";
+      if (en.has("approval_policy") && values.approval_policy) out += "approval_policy = " + JSON.stringify(String(values.approval_policy)) + "\n";
+      if (en.has("sandbox_mode") && values.sandbox_mode) out += "sandbox_mode = " + JSON.stringify(String(values.sandbox_mode)) + "\n";
     }
     return { config: out, toml: out, env: "# env\n", cli: schema.product === "codex" ? "codex --profile titanium\n" : "opencode\n", markdown: "# Ref\n" };
   }
