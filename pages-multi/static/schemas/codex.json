@@ -1,10 +1,10 @@
 {
   "product": "codex",
   "productTitle": "Codex Titanium",
-  "productTagline": "Titanium unrestricted profile \u2014 optimal with Sekhmet (xbrd-spark). https://github.com/VeigaPunk/xbrd-spark \u00b7 pairs with https://github.com/VeigaPunk/codex-titanium",
+  "productTagline": "Titanium unrestricted profile \u2014 Godspeed system prompt, multi_agent_v2@64, never / danger-full-access",
   "configPath": "~/.codex/config.toml",
   "format": "toml",
-  "versionNote": "Codex CLI \u00b7 Titanium unrestricted \u00b7 Godspeed system prompt \u00b7 Optimal with Sekhmet (sekhmet / xbrd-spark, up to 64 concurrent) \u00b7 https://github.com/VeigaPunk/xbrd-spark",
+  "versionNote": "Codex CLI \u00b7 Titanium unrestricted \u00b7 Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark) \u00b7 pairs with codex-titanium",
   "cliFlags": [
     {
       "category": "Session",
@@ -460,7 +460,7 @@
     {
       "id": "titanium",
       "name": "Titanium (unrestricted \u00b7 optimal with Sekhmet)",
-      "description": "Matches codex-titanium/titanium/config.toml. Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark): never/danger-full-access, multi_agent_v2@64, Godspeed system prompt. Sekhmet swarm -j N (cap 64) expects this profile.",
+      "description": "Matches codex-titanium/titanium/config.toml. Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark): approval never, sandbox danger-full-access, multi_agent_v2 max 64 threads, Godspeed system prompt. Use with: sekhmet swarm -j N (cap 64).",
       "enabled": [
         "model",
         "model_provider",
