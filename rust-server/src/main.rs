@@ -1,5 +1,4 @@
 //! Grok Build Config Builder — pure Rust (Axum).
-//! Serves the SPA and generates config.toml / env / CLI patches.
 
 mod generate;
 mod schema;
@@ -14,11 +13,9 @@ use axum::{
 use clap::Parser;
 use generate::{generate_all, GenerateRequest};
 use schema::payload;
-use std::{net::SocketAddr, sync::Arc};
+use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 use tower_http::{
-    compression::CompressionLayer,
-    set_header::SetResponseHeaderLayer,
-    trace::TraceLayer,
+    compression::CompressionLayer, set_header::SetResponseHeaderLayer, trace::TraceLayer,
 };
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -27,43 +24,58 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 struct Args {
     #[arg(long, env = "HOST", default_value = "0.0.0.0")]
     host: String,
-
     #[arg(long, env = "PORT", default_value_t = 8080)]
     port: u16,
+    #[arg(long, env = "STATIC_DIR", default_value = "/workspace/rust-server/static")]
+    static_dir: PathBuf,
 }
 
 #[derive(Clone)]
 struct AppState {
     schema_json: Arc<String>,
-    index_html: &'static str,
-    styles_css: &'static str,
-    app_js: &'static str,
+    static_dir: PathBuf,
 }
 
 async fn health() -> &'static str {
     "ok"
 }
 
-async fn index(State(state): State<AppState>) -> Html<&'static str> {
-    Html(state.index_html)
+async fn index(State(state): State<AppState>) -> Response {
+    let path = state.static_dir.join("index.html");
+    match std::fs::read_to_string(&path) {
+        Ok(html) => Html(html).into_response(),
+        Err(_) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "missing index.html — set STATIC_DIR",
+        )
+            .into_response(),
+    }
 }
 
 async fn styles(State(state): State<AppState>) -> Response {
-    (
-        StatusCode::OK,
-        [(header::CONTENT_TYPE, "text/css; charset=utf-8")],
-        state.styles_css,
-    )
-        .into_response()
+    let path = state.static_dir.join("styles.css");
+    match std::fs::read_to_string(&path) {
+        Ok(css) => (
+            StatusCode::OK,
+            [(header::CONTENT_TYPE, "text/css; charset=utf-8")],
+            css,
+        )
+            .into_response(),
+        Err(_) => StatusCode::NOT_FOUND.into_response(),
+    }
 }
 
 async fn app_js(State(state): State<AppState>) -> Response {
-    (
-        StatusCode::OK,
-        [(header::CONTENT_TYPE, "application/javascript; charset=utf-8")],
-        state.app_js,
-    )
-        .into_response()
+    let path = state.static_dir.join("app.js");
+    match std::fs::read_to_string(&path) {
+        Ok(js) => (
+            StatusCode::OK,
+            [(header::CONTENT_TYPE, "application/javascript; charset=utf-8")],
+            js,
+        )
+            .into_response(),
+        Err(_) => StatusCode::NOT_FOUND.into_response(),
+    }
 }
 
 async fn api_schema(State(state): State<AppState>) -> Response {
@@ -90,13 +102,10 @@ async fn main() {
         .init();
 
     let args = Args::parse();
-
     let schema_json = serde_json::to_string(&payload()).expect("serialize schema");
     let state = AppState {
         schema_json: Arc::new(schema_json),
-        index_html: include_str!("../static/index.html"),
-        styles_css: include_str!("../static/styles.css"),
-        app_js: include_str!("../static/app.js"),
+        static_dir: args.static_dir.clone(),
     };
 
     let app = Router::new()
@@ -118,8 +127,7 @@ async fn main() {
     let addr: SocketAddr = format!("{}:{}", args.host, args.port)
         .parse()
         .expect("invalid host:port");
-
-    tracing::info!(%addr, "Grok Build config builder (Rust) listening");
+    tracing::info!(%addr, static_dir = %args.static_dir.display(), "listening");
     let listener = tokio::net::TcpListener::bind(addr)
         .await
         .expect("bind");
