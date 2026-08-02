@@ -1,22 +1,28 @@
-# Grok Build Config Builder
+# Agent Config Builders — Titanium
 
-Interactive config reference and patch builder for the [Grok Build CLI](https://x.ai/cli).
+Interactive config builders for **Grok Build**, **Codex**, and **OpenCode**.  
+**Stack: pure Rust** (Axum). No Python.
 
-**Stack: pure Rust** (Axum). No Node runtime, no Python.
+Titanium profiles are the sensible defaults.
 
-- Toggle every `config.toml` / env / CLI setting  
-- Download a custom patch for `~/.grok/config.toml`  
-- Export env vars and launch snippets  
-- Full markdown reference generated from the Rust schema  
+## Live
 
-## Toolchain
-
-| Tool | Notes |
+| Product | URL |
 | --- | --- |
-| **Rust** | stable (`cargo` / `rustc`) |
-| **Server** | Axum binary `grok-config-server` |
+| **Hub (preview)** | live preview in this workspace |
+| **Grok Build** | https://grok-build-config-builder.vercel.app |
+| **Codex Titanium** | https://codex-titanium-config.vercel.app |
+| **OpenCode Titanium** | https://opencode-titanium-config.vercel.app |
 
-## Run
+## What you get
+
+- Toggle every setting · download patches · env exports · launch snippets · markdown reference  
+- **Codex** → `~/.codex/config.toml` with `[profiles.titanium]` (gpt-5.4, high effort, workspace-write, multi-agent/hooks/memories)  
+- **OpenCode** → `opencode.json` Titanium build (Sonnet/Haiku, plan mode, scout, subagents, bash=ask)  
+- **Grok** → Grok Build CLI `config.toml`  
+- Font: **JetBrainsMonoNL Nerd Font Mono** everywhere  
+
+## Run (Rust)
 
 ```bash
 cargo build --manifest-path rust-server/Cargo.toml --release
@@ -25,31 +31,28 @@ cargo build --manifest-path rust-server/Cargo.toml --release
 sh startup.sh
 ```
 
-Open the live preview. Endpoints:
+### Endpoints
 
-- `GET /` — SPA  
-- `GET /api/schema` — JSON schema  
-- `POST /api/generate` — `{ enabled, values }` → toml / env / cli / markdown  
-- `GET /healthz` — health  
+- `GET /` — product hub  
+- `GET /codex/` · `GET /opencode/` · `GET /grok/` — builders  
+- `GET /api/{product}/schema`  
+- `POST /api/{product}/generate` — `{ enabled, values }`  
+- `GET /healthz`  
 
 ## Layout
 
 ```
 rust-server/
-  Cargo.toml
-  src/
-    main.rs       # Axum routes
-    schema.rs     # fields, presets, flags, env
-    generate.rs   # TOML / env / CLI / markdown
-  static/
-    index.html
-    styles.css
-    app.js        # UI (schema loaded from Rust API)
+  src/products/{grok,codex,opencode}.rs
+  static/{index.html,app.js,styles.css}
+vercel-static/          # CDN schemas + product app.js
+vercel-deploy-codex/    # Vercel shell for Codex
+vercel-deploy-opencode/ # Vercel shell for OpenCode
 ```
 
-## Repository
+## Repo
 
-**https://github.com/VeigaPunk/grok-build-config-builder**
+https://github.com/VeigaPunk/grok-build-config-builder
 
 ## License
 
