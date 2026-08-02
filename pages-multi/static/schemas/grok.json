@@ -1,0 +1,1158 @@
+{
+  "cliFlags": [
+    {
+      "category": "Session",
+      "description": "Set working directory",
+      "flag": "--cwd <PATH>"
+    },
+    {
+      "category": "Session",
+      "description": "Resume session (omit ID = most recent)",
+      "flag": "-r, --resume [<ID>]"
+    },
+    {
+      "category": "Session",
+      "description": "Continue most recent session for this directory",
+      "flag": "-c, --continue"
+    },
+    {
+      "category": "Session",
+      "description": "Use a specific UUID for a new session",
+      "flag": "-s, --session-id <UUID>"
+    },
+    {
+      "category": "Session",
+      "description": "When resuming, fork into a new session ID",
+      "flag": "--fork-session"
+    },
+    {
+      "category": "Session",
+      "description": "Start session in a new git worktree",
+      "flag": "-w, --worktree [<NAME>]"
+    },
+    {
+      "category": "Session",
+      "description": "Branch, tag, or commit for the worktree",
+      "flag": "--ref <REF>"
+    },
+    {
+      "category": "Model",
+      "description": "Model ID",
+      "flag": "-m, --model <MODEL>"
+    },
+    {
+      "category": "Model",
+      "description": "Reasoning effort level",
+      "flag": "--effort <LEVEL>"
+    },
+    {
+      "category": "Permissions",
+      "description": "Auto-approve all tool executions",
+      "flag": "--always-approve / --yolo"
+    },
+    {
+      "category": "Permissions",
+      "description": "Permission allow rule (e.g. 'Bash(git *)')",
+      "flag": "--allow <RULE>"
+    },
+    {
+      "category": "Permissions",
+      "description": "Permission deny rule",
+      "flag": "--deny <RULE>"
+    },
+    {
+      "category": "Permissions",
+      "description": "Sandbox profile: off | workspace | read-only | strict",
+      "flag": "--sandbox <PROFILE>"
+    },
+    {
+      "category": "Prompt",
+      "description": "Append extra rules to system prompt",
+      "flag": "--rules <TEXT>"
+    },
+    {
+      "category": "Prompt",
+      "description": "Replace system prompt entirely",
+      "flag": "--system-prompt-override <TEXT>"
+    },
+    {
+      "category": "Tools",
+      "description": "Allow only these built-in tools",
+      "flag": "--tools <LIST>"
+    },
+    {
+      "category": "Tools",
+      "description": "Disallow built-in tools",
+      "flag": "--disallowed-tools <LIST>"
+    },
+    {
+      "category": "Agent",
+      "description": "Maximum agent turns",
+      "flag": "--max-turns <N>"
+    },
+    {
+      "category": "Agent",
+      "description": "Disable planning",
+      "flag": "--no-plan"
+    },
+    {
+      "category": "Agent",
+      "description": "Disable subagents",
+      "flag": "--no-subagents"
+    },
+    {
+      "category": "Agent",
+      "description": "Disable memory",
+      "flag": "--no-memory"
+    },
+    {
+      "category": "Agent",
+      "description": "Disable web search",
+      "flag": "--disable-web-search"
+    },
+    {
+      "category": "Agent",
+      "description": "Enable cross-session memory",
+      "flag": "--experimental-memory"
+    },
+    {
+      "category": "Auth",
+      "description": "Use OAuth when welcome screen starts auth",
+      "flag": "--oauth"
+    },
+    {
+      "category": "Headless",
+      "description": "Headless one-shot prompt",
+      "flag": "-p, --single <PROMPT>"
+    },
+    {
+      "category": "Headless",
+      "description": "plain | json | streaming-json",
+      "flag": "--output-format <FMT>"
+    },
+    {
+      "category": "Headless",
+      "description": "Inline (no fullscreen TUI takeover)",
+      "flag": "--no-alt-screen"
+    },
+    {
+      "category": "Headless",
+      "description": "Skip background update checks",
+      "flag": "--no-auto-update"
+    }
+  ],
+  "configPath": "~/.grok/config.toml",
+  "envVars": [
+    {
+      "category": "Paths",
+      "description": "Home for config, auth, sessions (default ~/.grok)",
+      "name": "GROK_HOME"
+    },
+    {
+      "category": "Auth",
+      "description": "API key for headless / CI auth",
+      "name": "XAI_API_KEY"
+    },
+    {
+      "category": "Models",
+      "description": "Session default model (= -m)",
+      "name": "GROK_DEFAULT_MODEL"
+    },
+    {
+      "category": "Models",
+      "description": "Model for web_search tool",
+      "name": "GROK_WEB_SEARCH_MODEL"
+    },
+    {
+      "category": "Sandbox",
+      "description": "Sandbox profile name",
+      "name": "GROK_SANDBOX"
+    },
+    {
+      "category": "CLI",
+      "description": "Suppress auto-updater when set",
+      "name": "GROK_DISABLE_AUTOUPDATER"
+    },
+    {
+      "category": "Features",
+      "description": "1/0 cross-session memory",
+      "name": "GROK_MEMORY"
+    },
+    {
+      "category": "Features",
+      "description": "1/0 subagents / task tool",
+      "name": "GROK_SUBAGENTS"
+    },
+    {
+      "category": "Tools",
+      "description": "1/0 enable web_fetch",
+      "name": "GROK_WEB_FETCH"
+    },
+    {
+      "category": "Tools",
+      "description": "0 disables write tool",
+      "name": "GROK_WRITE_FILE"
+    },
+    {
+      "category": "UI",
+      "description": "Color theme",
+      "name": "GROK_THEME"
+    },
+    {
+      "category": "Logging",
+      "description": "Log filter e.g. debug",
+      "name": "RUST_LOG"
+    }
+  ],
+  "fields": [
+    {
+      "cli": "-m, --model",
+      "default": "grok-build",
+      "description": "Model used for new sessions. Recommended: grok-build.",
+      "env": "GROK_DEFAULT_MODEL",
+      "group": "models",
+      "id": "models.default",
+      "label": "Default model",
+      "path": "models.default",
+      "recommended": true,
+      "section": "models",
+      "type": "string"
+    },
+    {
+      "default": "grok-4.5",
+      "description": "Model used by the client-side web_search tool.",
+      "env": "GROK_WEB_SEARCH_MODEL",
+      "group": "models",
+      "id": "models.web_search",
+      "label": "Web search model",
+      "path": "models.web_search",
+      "section": "models",
+      "type": "string"
+    },
+    {
+      "cli": "--effort",
+      "default": "medium",
+      "description": "Default reasoning effort for the default model (if supported).",
+      "group": "models",
+      "id": "models.default_reasoning_effort",
+      "label": "Default reasoning effort",
+      "options": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "path": "models.default_reasoning_effort",
+      "section": "models",
+      "type": "enum"
+    },
+    {
+      "description": "Model used for session titles/summaries.",
+      "group": "models",
+      "id": "models.session_summary",
+      "label": "Session summary model",
+      "path": "models.session_summary",
+      "section": "models",
+      "type": "string"
+    },
+    {
+      "description": "Model used for image description.",
+      "group": "models",
+      "id": "models.image_description",
+      "label": "Image description model",
+      "path": "models.image_description",
+      "section": "models",
+      "type": "string"
+    },
+    {
+      "default": 0.7,
+      "description": "Global sampling temperature default.",
+      "group": "models",
+      "id": "models.temperature",
+      "label": "Temperature",
+      "path": "models.temperature",
+      "section": "models",
+      "type": "number"
+    },
+    {
+      "default": 0.95,
+      "description": "Global top_p sampling default.",
+      "group": "models",
+      "id": "models.top_p",
+      "label": "Top P",
+      "path": "models.top_p",
+      "section": "models",
+      "type": "number"
+    },
+    {
+      "default": 8192.0,
+      "description": "Global max completion tokens.",
+      "group": "models",
+      "id": "models.max_completion_tokens",
+      "label": "Max completion tokens",
+      "path": "models.max_completion_tokens",
+      "section": "models",
+      "type": "number"
+    },
+    {
+      "description": "Global inference retry default.",
+      "group": "models",
+      "id": "models.max_retries",
+      "label": "Max retries",
+      "path": "models.max_retries",
+      "section": "models",
+      "type": "number"
+    },
+    {
+      "default": true,
+      "description": "Tool-call streaming request shape (some BYOK endpoints need false).",
+      "group": "models",
+      "id": "models.stream_tool_calls",
+      "label": "Stream tool calls",
+      "path": "models.stream_tool_calls",
+      "section": "models",
+      "type": "boolean"
+    },
+    {
+      "description": "Glob list restricting model picker / default / -m selection.",
+      "group": "models",
+      "id": "models.allowed_models",
+      "label": "Allowed models",
+      "path": "models.allowed_models",
+      "section": "models",
+      "type": "string-list"
+    },
+    {
+      "description": "Hide from picker (still usable via -m).",
+      "group": "models",
+      "id": "models.hidden_models",
+      "label": "Hidden models",
+      "path": "models.hidden_models",
+      "section": "models",
+      "type": "string-list"
+    },
+    {
+      "description": "Remove from catalog (wins over hidden).",
+      "group": "models",
+      "id": "models.disabled_models",
+      "label": "Disabled models",
+      "path": "models.disabled_models",
+      "section": "models",
+      "type": "string-list"
+    },
+    {
+      "default": "grok-4.5",
+      "description": "TOML table name under [model.\"id\"]. e.g. grok-4.5",
+      "group": "model-provider",
+      "id": "model.custom.id",
+      "label": "Custom model section id",
+      "path": "model.custom.id",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "default": "grok-4.5",
+      "description": "Model id sent to the API.",
+      "group": "model-provider",
+      "id": "model.custom.model",
+      "label": "API model id",
+      "path": "model.custom.model",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "default": "https://api.x.ai/v1",
+      "description": "Provider endpoint.",
+      "env": "GROK_XAI_API_BASE_URL",
+      "group": "model-provider",
+      "id": "model.custom.base_url",
+      "label": "Base URL",
+      "path": "model.custom.base_url",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "default": "Grok 4.5",
+      "description": "Label in the model picker.",
+      "group": "model-provider",
+      "id": "model.custom.name",
+      "label": "Display name",
+      "path": "model.custom.name",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "description": "Optional description in the picker.",
+      "group": "model-provider",
+      "id": "model.custom.description",
+      "label": "Description",
+      "path": "model.custom.description",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "default": "XAI_API_KEY",
+      "description": "Environment variable holding the API key (prefer over inline key).",
+      "group": "model-provider",
+      "id": "model.custom.env_key",
+      "label": "API key env var",
+      "path": "model.custom.env_key",
+      "section": "model.<id>",
+      "type": "string"
+    },
+    {
+      "default": "responses",
+      "description": "Protocol: chat_completions | responses | messages.",
+      "group": "model-provider",
+      "id": "model.custom.api_backend",
+      "label": "API backend",
+      "options": [
+        "chat_completions",
+        "responses",
+        "messages"
+      ],
+      "path": "model.custom.api_backend",
+      "section": "model.<id>",
+      "type": "enum"
+    },
+    {
+      "default": 1000000.0,
+      "description": "Token context window (drives auto-compact timing).",
+      "group": "model-provider",
+      "id": "model.custom.context_window",
+      "label": "Context window",
+      "path": "model.custom.context_window",
+      "section": "model.<id>",
+      "type": "number"
+    },
+    {
+      "default": true,
+      "description": "Whether endpoint supports Grok-hosted server-side search tools.",
+      "group": "model-provider",
+      "id": "model.custom.supports_backend_search",
+      "label": "Supports backend search",
+      "path": "model.custom.supports_backend_search",
+      "section": "model.<id>",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Expose reasoning effort controls for this model.",
+      "group": "model-provider",
+      "id": "model.custom.supports_reasoning_effort",
+      "label": "Supports reasoning effort",
+      "path": "model.custom.supports_reasoning_effort",
+      "section": "model.<id>",
+      "type": "boolean"
+    },
+    {
+      "default": 0.7,
+      "description": "Per-model sampling temperature.",
+      "group": "model-provider",
+      "id": "model.custom.temperature",
+      "label": "Model temperature",
+      "path": "model.custom.temperature",
+      "section": "model.<id>",
+      "type": "number"
+    },
+    {
+      "default": 0.95,
+      "description": "Per-model top_p.",
+      "group": "model-provider",
+      "id": "model.custom.top_p",
+      "label": "Model top_p",
+      "path": "model.custom.top_p",
+      "section": "model.<id>",
+      "type": "number"
+    },
+    {
+      "default": 8192.0,
+      "description": "Per-model max completion tokens.",
+      "group": "model-provider",
+      "id": "model.custom.max_completion_tokens",
+      "label": "Model max tokens",
+      "path": "model.custom.max_completion_tokens",
+      "section": "model.<id>",
+      "type": "number"
+    },
+    {
+      "cli": "--sandbox",
+      "default": "off",
+      "description": "off | workspace | read-only | strict | custom. Restricts FS/network for child processes.",
+      "env": "GROK_SANDBOX",
+      "group": "sandbox",
+      "id": "sandbox.profile",
+      "label": "Sandbox profile",
+      "options": [
+        "off",
+        "workspace",
+        "devbox",
+        "read-only",
+        "strict"
+      ],
+      "path": "sandbox.profile",
+      "recommended": true,
+      "section": "sandbox",
+      "type": "enum"
+    },
+    {
+      "default": false,
+      "description": "Skip bash permission prompts when a sandbox profile is active.",
+      "env": "GROK_SANDBOX_AUTO_ALLOW_BASH",
+      "group": "sandbox",
+      "id": "sandbox.auto_allow_bash",
+      "label": "Auto-allow bash in sandbox",
+      "path": "sandbox.auto_allow_bash",
+      "section": "sandbox",
+      "type": "boolean"
+    },
+    {
+      "cli": "--always-approve / --yolo",
+      "default": "auto",
+      "description": "auto | ask | always-approve. Legacy: approval_mode, yolo=true.",
+      "group": "permissions",
+      "id": "permissions.permission_mode",
+      "label": "Permission mode",
+      "options": [
+        "auto",
+        "ask",
+        "always-approve"
+      ],
+      "path": "permissions.permission_mode",
+      "section": "permissions",
+      "type": "enum"
+    },
+    {
+      "default": false,
+      "description": "Show per-tool Always allow options.",
+      "env": "GROK_REMEMBER_TOOL_APPROVALS",
+      "group": "permissions",
+      "id": "permissions.remember_tool_approvals",
+      "label": "Remember tool approvals",
+      "path": "permissions.remember_tool_approvals",
+      "section": "permissions",
+      "type": "boolean"
+    },
+    {
+      "default": "always_allow_all_sessions",
+      "description": "Preselected row on the first permission prompt.",
+      "env": "GROK_DEFAULT_SELECTED_PERMISSION",
+      "group": "permissions",
+      "id": "permissions.default_selected_permission",
+      "label": "Default selected permission",
+      "options": [
+        "always_allow_all_sessions",
+        "allow_once",
+        "deny",
+        "always_allow_tool"
+      ],
+      "path": "permissions.default_selected_permission",
+      "section": "permissions",
+      "type": "enum"
+    },
+    {
+      "default": 85.0,
+      "description": "Auto-compact when context usage reaches this percent (0\u2013100).",
+      "group": "session",
+      "id": "session.auto_compact_threshold_percent",
+      "label": "Auto-compact threshold %",
+      "path": "session.auto_compact_threshold_percent",
+      "section": "session",
+      "type": "number"
+    },
+    {
+      "cli": "--no-auto-update",
+      "default": true,
+      "description": "Check for CLI updates on launch.",
+      "env": "GROK_DISABLE_AUTOUPDATER",
+      "group": "cli",
+      "id": "cli.auto_update",
+      "label": "Auto update",
+      "path": "cli.auto_update",
+      "section": "cli",
+      "type": "boolean"
+    },
+    {
+      "default": "stable",
+      "description": "stable or alpha release channel preference.",
+      "group": "cli",
+      "id": "cli.channel",
+      "label": "Release channel",
+      "options": [
+        "stable",
+        "alpha"
+      ],
+      "path": "cli.channel",
+      "section": "cli",
+      "type": "enum"
+    },
+    {
+      "default": true,
+      "description": "Show startup tips.",
+      "group": "cli",
+      "id": "cli.show_tips",
+      "label": "Show tips",
+      "path": "cli.show_tips",
+      "section": "cli",
+      "type": "boolean"
+    },
+    {
+      "default": "never",
+      "description": "Whether /new offers a worktree: ask | always | never.",
+      "group": "hints",
+      "id": "hints.new_session_worktree_mode",
+      "label": "/new worktree mode",
+      "options": [
+        "ask",
+        "always",
+        "never"
+      ],
+      "path": "hints.new_session_worktree_mode",
+      "section": "hints",
+      "type": "enum"
+    },
+    {
+      "default": "ask",
+      "description": "Whether /fork offers a worktree: ask | always | never.",
+      "group": "hints",
+      "id": "hints.fork_worktree_mode",
+      "label": "/fork worktree mode",
+      "options": [
+        "ask",
+        "always",
+        "never"
+      ],
+      "path": "hints.fork_worktree_mode",
+      "section": "hints",
+      "type": "enum"
+    },
+    {
+      "default": false,
+      "description": "Denser message padding.",
+      "group": "ui",
+      "id": "ui.compact_mode",
+      "label": "Compact mode",
+      "path": "ui.compact_mode",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": "auto",
+      "description": "Color theme (auto or built-in name).",
+      "env": "GROK_THEME",
+      "group": "ui",
+      "id": "ui.theme",
+      "label": "Theme",
+      "path": "ui.theme",
+      "section": "ui",
+      "type": "string"
+    },
+    {
+      "default": "fullscreen",
+      "description": "Default render mode for plain grok: fullscreen | minimal.",
+      "group": "ui",
+      "id": "ui.screen_mode",
+      "label": "Screen mode",
+      "options": [
+        "fullscreen",
+        "minimal"
+      ],
+      "path": "ui.screen_mode",
+      "section": "ui",
+      "type": "enum"
+    },
+    {
+      "default": true,
+      "description": "Show thinking/reasoning blocks in the TUI.",
+      "env": "GROK_SHOW_THINKING_BLOCKS",
+      "group": "ui",
+      "id": "ui.show_thinking_blocks",
+      "label": "Show thinking blocks",
+      "path": "ui.show_thinking_blocks",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Clock time next to messages.",
+      "group": "ui",
+      "id": "ui.show_timestamps",
+      "label": "Show timestamps",
+      "path": "ui.show_timestamps",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Per-turn tick rail instead of the scrollbar.",
+      "group": "ui",
+      "id": "ui.show_timeline",
+      "label": "Show timeline",
+      "path": "ui.show_timeline",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Snap the sent prompt to the top of the viewport.",
+      "group": "ui",
+      "id": "ui.page_flip_on_send",
+      "label": "Page flip on send",
+      "path": "ui.page_flip_on_send",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Fold consecutive read/search/list tool rows.",
+      "env": "GROK_GROUP_TOOL_VERBS",
+      "group": "ui",
+      "id": "ui.group_tool_verbs",
+      "label": "Group tool verbs",
+      "path": "ui.group_tool_verbs",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Collapse edits to one-line +N/-M summaries.",
+      "env": "GROK_COLLAPSED_EDIT_BLOCKS",
+      "group": "ui",
+      "id": "ui.collapsed_edit_blocks",
+      "label": "Collapsed edit blocks",
+      "path": "ui.collapsed_edit_blocks",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Show next-prompt ghost text after each turn.",
+      "env": "GROK_PROMPT_SUGGESTIONS",
+      "group": "ui",
+      "id": "ui.prompt_suggestions",
+      "label": "Prompt suggestions",
+      "path": "ui.prompt_suggestions",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": 50.0,
+      "description": "Mouse/trackpad scroll speed (1\u2013100).",
+      "env": "GROK_SCROLL_SPEED",
+      "group": "ui",
+      "id": "ui.scroll_speed",
+      "label": "Scroll speed",
+      "path": "ui.scroll_speed",
+      "section": "ui",
+      "type": "number"
+    },
+    {
+      "default": "auto",
+      "description": "auto | wheel | trackpad.",
+      "env": "GROK_SCROLL_MODE",
+      "group": "ui",
+      "id": "ui.scroll_mode",
+      "label": "Scroll mode",
+      "options": [
+        "auto",
+        "wheel",
+        "trackpad"
+      ],
+      "path": "ui.scroll_mode",
+      "section": "ui",
+      "type": "enum"
+    },
+    {
+      "default": false,
+      "description": "Reverse vertical scroll direction.",
+      "env": "GROK_INVERT_SCROLL",
+      "group": "ui",
+      "id": "ui.invert_scroll",
+      "label": "Invert scroll",
+      "path": "ui.invert_scroll",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Enterprise pin: blocks --yolo / always-approve.",
+      "group": "ui",
+      "id": "ui.disable_bypass_permissions_mode",
+      "label": "Disable bypass-permissions mode",
+      "path": "ui.disable_bypass_permissions_mode",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Ctrl+R in scrollback toggles terminal mouse capture.",
+      "env": "GROK_MOUSE_REPORTING_TOGGLE",
+      "group": "ui",
+      "id": "ui.mouse_reporting_toggle",
+      "label": "Mouse reporting toggle",
+      "path": "ui.mouse_reporting_toggle",
+      "section": "ui",
+      "type": "boolean"
+    },
+    {
+      "cli": "--experimental-memory / --no-memory",
+      "default": false,
+      "description": "Enable experimental cross-session memory.",
+      "env": "GROK_MEMORY",
+      "group": "features",
+      "id": "features.memory",
+      "label": "Cross-session memory",
+      "path": "features.memory",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "cli": "--no-subagents",
+      "default": true,
+      "description": "Enable subagents / the task tool.",
+      "env": "GROK_SUBAGENTS",
+      "group": "features",
+      "id": "features.subagents",
+      "label": "Subagents",
+      "path": "features.subagents",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Enable web_fetch (disabled by default for security).",
+      "env": "GROK_WEB_FETCH",
+      "group": "features",
+      "id": "features.web_fetch",
+      "label": "Web fetch tool",
+      "path": "features.web_fetch",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Disable with false for read-only sessions.",
+      "env": "GROK_WRITE_FILE",
+      "group": "features",
+      "id": "features.write_file",
+      "label": "Write file tool",
+      "path": "features.write_file",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "On-demand MCP tool discovery for large toolsets.",
+      "env": "GROK_TOOL_SEARCH",
+      "group": "features",
+      "id": "features.tool_search",
+      "label": "Tool search",
+      "path": "features.tool_search",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Enable the LSP code-intel tool.",
+      "env": "GROK_LSP_TOOLS",
+      "group": "features",
+      "id": "features.lsp_tools",
+      "label": "LSP tools",
+      "path": "features.lsp_tools",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Filter search/read tools by gitignore.",
+      "env": "GROK_RESPECT_GITIGNORE",
+      "group": "features",
+      "id": "features.respect_gitignore",
+      "label": "Respect gitignore",
+      "path": "tools.respect_gitignore",
+      "section": "tools",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Master telemetry feature toggle (when supported).",
+      "group": "privacy",
+      "id": "features.telemetry",
+      "label": "Telemetry feature flag",
+      "path": "features.telemetry",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Client request to skip whole-repo git bundle upload.",
+      "group": "privacy",
+      "id": "harness.disable_codebase_upload",
+      "label": "Disable codebase upload",
+      "path": "harness.disable_codebase_upload",
+      "recommended": true,
+      "section": "harness",
+      "type": "boolean"
+    },
+    {
+      "default": false,
+      "description": "Upload telemetry traces.",
+      "group": "privacy",
+      "id": "telemetry.trace_upload",
+      "label": "Trace upload",
+      "path": "telemetry.trace_upload",
+      "recommended": true,
+      "section": "telemetry",
+      "type": "boolean"
+    },
+    {
+      "description": "Client ID for enterprise OIDC authentication.",
+      "env": "GROK_OIDC_CLIENT_ID",
+      "group": "auth",
+      "id": "auth.oidc.client_id",
+      "label": "OIDC client ID",
+      "path": "auth.oidc.client_id",
+      "section": "auth.oidc",
+      "type": "string"
+    },
+    {
+      "description": "Executable that outputs a token (bare string or JSON).",
+      "group": "auth",
+      "id": "auth.auth_provider_command",
+      "label": "Auth provider command",
+      "path": "auth.auth_provider_command",
+      "section": "auth",
+      "type": "string"
+    },
+    {
+      "default": false,
+      "description": "Force interactive/IdP login; disable API key usage.",
+      "group": "auth",
+      "id": "grok_com_config.disable_api_key_auth",
+      "label": "Disable API key auth",
+      "path": "grok_com_config.disable_api_key_auth",
+      "section": "grok_com_config",
+      "type": "boolean"
+    },
+    {
+      "description": "Restrict login to a specific team UUID.",
+      "group": "auth",
+      "id": "grok_com_config.force_login_team_uuid",
+      "label": "Force login team UUID",
+      "path": "grok_com_config.force_login_team_uuid",
+      "section": "grok_com_config",
+      "type": "string"
+    },
+    {
+      "description": "Extra plugin directories.",
+      "group": "plugins",
+      "id": "plugins.paths",
+      "label": "Plugin paths",
+      "path": "plugins.paths",
+      "section": "plugins",
+      "type": "string-list"
+    },
+    {
+      "description": "Explicitly enable plugins by name.",
+      "group": "plugins",
+      "id": "plugins.enabled",
+      "label": "Enabled plugins",
+      "path": "plugins.enabled",
+      "section": "plugins",
+      "type": "string-list"
+    },
+    {
+      "description": "Discover but do not activate.",
+      "group": "plugins",
+      "id": "plugins.disabled",
+      "label": "Disabled plugins",
+      "path": "plugins.disabled",
+      "section": "plugins",
+      "type": "string-list"
+    }
+  ],
+  "format": "toml",
+  "groups": [
+    {
+      "description": "Default model, web search model, sampling, and catalog filters.",
+      "id": "models",
+      "title": "Models"
+    },
+    {
+      "description": "BYOK / custom endpoint for a named model (optional).",
+      "id": "model-provider",
+      "title": "Custom model provider"
+    },
+    {
+      "description": "Filesystem sandbox profile and bash auto-allow.",
+      "id": "sandbox",
+      "title": "Sandbox"
+    },
+    {
+      "description": "Permission mode and tool approval defaults.",
+      "id": "permissions",
+      "title": "Permissions"
+    },
+    {
+      "description": "Auto-compact and session behavior.",
+      "id": "session",
+      "title": "Session"
+    },
+    {
+      "description": "Auto-update channel and startup tips.",
+      "id": "cli",
+      "title": "CLI"
+    },
+    {
+      "description": "When /new and /fork offer git worktrees.",
+      "id": "hints",
+      "title": "Worktree hints"
+    },
+    {
+      "description": "Theme, layout mode, thinking blocks, scroll.",
+      "id": "ui",
+      "title": "UI"
+    },
+    {
+      "description": "Memory, subagents, web tools, write tool, LSP.",
+      "id": "features",
+      "title": "Features"
+    },
+    {
+      "description": "Codebase upload, trace upload, telemetry toggles.",
+      "id": "privacy",
+      "title": "Privacy & telemetry"
+    },
+    {
+      "description": "OIDC, API key policy, team login pin.",
+      "id": "auth",
+      "title": "Auth & enterprise"
+    },
+    {
+      "description": "Extra plugin paths and enable/disable lists.",
+      "id": "plugins",
+      "title": "Plugins"
+    }
+  ],
+  "presets": [
+    {
+      "description": "Disable codebase upload & telemetry; sandbox workspace.",
+      "enabled": [
+        "harness.disable_codebase_upload",
+        "telemetry.trace_upload",
+        "features.telemetry",
+        "sandbox.profile",
+        "models.default"
+      ],
+      "id": "privacy-first",
+      "name": "Privacy first",
+      "values": {
+        "features.telemetry": false,
+        "harness.disable_codebase_upload": true,
+        "models.default": "grok-build",
+        "sandbox.profile": "workspace",
+        "telemetry.trace_upload": false
+      }
+    },
+    {
+      "description": "Workspace sandbox, ask mode, no web_fetch, gitignore on.",
+      "enabled": [
+        "sandbox.profile",
+        "permissions.permission_mode",
+        "features.web_fetch",
+        "features.respect_gitignore",
+        "features.write_file",
+        "models.default",
+        "harness.disable_codebase_upload"
+      ],
+      "id": "safe-dev",
+      "name": "Safe development",
+      "values": {
+        "features.respect_gitignore": true,
+        "features.web_fetch": false,
+        "features.write_file": true,
+        "harness.disable_codebase_upload": true,
+        "models.default": "grok-build",
+        "permissions.permission_mode": "ask",
+        "sandbox.profile": "workspace"
+      }
+    },
+    {
+      "description": "Always-approve, no auto-update, streaming-friendly defaults.",
+      "enabled": [
+        "permissions.permission_mode",
+        "cli.auto_update",
+        "models.default",
+        "features.subagents",
+        "sandbox.profile"
+      ],
+      "id": "ci-headless",
+      "name": "CI / headless",
+      "values": {
+        "cli.auto_update": false,
+        "features.subagents": true,
+        "models.default": "grok-build",
+        "permissions.permission_mode": "always-approve",
+        "sandbox.profile": "workspace"
+      }
+    },
+    {
+      "description": "Strict/read-only sandbox, no write tool.",
+      "enabled": [
+        "sandbox.profile",
+        "features.write_file",
+        "permissions.permission_mode",
+        "models.default"
+      ],
+      "id": "read-only-review",
+      "name": "Read-only review",
+      "values": {
+        "features.write_file": false,
+        "models.default": "grok-build",
+        "permissions.permission_mode": "ask",
+        "sandbox.profile": "read-only"
+      }
+    }
+  ],
+  "product": "grok",
+  "productTagline": "Grok Build CLI config reference and patch builder.",
+  "productTitle": "Grok Build",
+  "subcommands": [
+    {
+      "cmd": "grok login [--device-auth]",
+      "desc": "Sign in (device-code for headless)"
+    },
+    {
+      "cmd": "grok logout",
+      "desc": "Sign out and clear credentials"
+    },
+    {
+      "cmd": "grok inspect [--json]",
+      "desc": "Show discovered config for current directory"
+    },
+    {
+      "cmd": "grok models",
+      "desc": "List available models"
+    },
+    {
+      "cmd": "grok mcp <list|add|remove|doctor>",
+      "desc": "Manage MCP servers"
+    },
+    {
+      "cmd": "grok sessions <list|search|delete>",
+      "desc": "Manage sessions"
+    },
+    {
+      "cmd": "grok update [--check|--stable|--alpha]",
+      "desc": "Update CLI"
+    },
+    {
+      "cmd": "grok version",
+      "desc": "Print version"
+    },
+    {
+      "cmd": "grok setup",
+      "desc": "Fetch and install managed configuration"
+    }
+  ],
+  "versionNote": "Grok Build CLI \u00b7 documented track v0.2.117 \u00b7 Grok 4.5 \u00b7 pure Rust builder"
+}
