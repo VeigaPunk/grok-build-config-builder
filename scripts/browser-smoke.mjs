@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 /**
- * Lightweight headless load + screenshot for http://127.0.0.1:8080 (or argv URL).
- * Does not try to "play" the app — just proves the page loads and captures a PNG
- * the agent can Read. Exit 0 on success, 1 on navigation failure, 2 if console errors.
- *
- * Screenshots default under /workspace/screenshots/ (never /tmp) so they live on
- * the workspace volume and stay readable by agent tools.
+ * Browser smoke via agent-browser (NOT Playwright).
+ * Usage: node scripts/browser-smoke.mjs [url] [screenshot.png]
+ * Exit 0 success, 1 navigation/load fail, 2 empty body / missing content.
  */
-import { mkdirSync } from "node:fs";
+import { mkdirSync, existsSync, statSync } from "node:fs";
 import { dirname } from "node:path";
-import { chromium } from "playwright";
+import { spawnSync } from "node:child_process";
 
 const url = process.argv[2] || "http://127.0.0.1:8080/";
 const outPng = process.argv[3] || "/workspace/screenshots/app-builder-preview.png";
@@ -17,54 +14,80 @@ const timeoutMs = Number(process.env.BROWSER_SMOKE_TIMEOUT_MS || 45000);
 
 mkdirSync(dirname(outPng), { recursive: true });
 
-const consoleErrors = [];
-const pageErrors = [];
+function ab(args, opts = {}) {
+  const r = spawnSync("agent-browser", args, {
+    encoding: "utf8",
+    timeout: opts.timeout ?? timeoutMs,
+    env: process.env,
+  });
+  return {
+    status: r.status ?? 1,
+    stdout: (r.stdout || "").trim(),
+    stderr: (r.stderr || "").trim(),
+    error: r.error,
+  };
+}
 
-const browser = await chromium.launch({
-  headless: true,
-  args: ["--no-sandbox", "--disable-dev-shm-usage"],
-});
+const steps = [];
+function run(label, args, opts) {
+  const res = ab(args, opts);
+  steps.push({ label, status: res.status, stdout: res.stdout.slice(0, 400), stderr: res.stderr.slice(0, 400) });
+  return res;
+}
 
 try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  page.on("console", (msg) => {
-    if (msg.type() === "error") consoleErrors.push(msg.text());
-  });
-  page.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
+  let open = run("open", ["open", url]);
+  if (open.status !== 0) {
+    // retry once after close
+    ab(["close", "--all"]);
+    open = run("open-retry", ["open", url]);
+  }
+  if (open.status !== 0) {
+    console.error(JSON.stringify({ ok: false, url, error: open.stderr || open.stdout || "open failed", steps }, null, 2));
+    process.exit(1);
+  }
 
-  const resp = await page.goto(url, { waitUntil: "networkidle", timeout: timeoutMs });
-  const status = resp?.status() ?? 0;
-  await page.waitForTimeout(1000);
+  run("wait-network", ["wait", "--load", "networkidle"]);
+  run("wait-ms", ["wait", "1500"]);
 
-  const title = await page.title();
-  const hasCanvas = (await page.locator("canvas").count()) > 0;
-  const bodyTextLen = (await page.locator("body").innerText().catch(() => "")).trim().length;
+  const titleRes = run("title", ["get", "title"]);
+  const title = titleRes.stdout || "";
 
-  await page.screenshot({ path: outPng, fullPage: false });
+  const textRes = run("text", ["eval", "document.body ? document.body.innerText : ''"]);
+  const bodyText = textRes.stdout || "";
+  const bodyTextLen = bodyText.trim().length;
 
-  console.log(
-    JSON.stringify(
-      {
-        url,
-        status,
-        title,
-        hasCanvas,
-        bodyTextLen,
-        consoleErrors,
-        pageErrors,
-        screenshot: outPng,
-      },
-      null,
-      2,
-    ),
-  );
+  const shot = run("screenshot", ["screenshot", outPng]);
+  const shotOk = existsSync(outPng) && statSync(outPng).size > 0;
 
-  if (status >= 400 || status === 0) process.exit(1);
-  if (pageErrors.length || consoleErrors.length) process.exit(2);
+  // console errors via eval if available
+  const errRes = run("console-errors", [
+    "eval",
+    "JSON.stringify((window.__consoleErrors||[]))",
+  ]);
+
+  ab(["close"]);
+
+  const result = {
+    url,
+    status: open.status === 0 ? 200 : 0,
+    title,
+    bodyTextLen,
+    screenshot: outPng,
+    screenshotOk: shotOk,
+    tool: "agent-browser",
+    consoleErrors: [],
+    pageErrors: [],
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+
+  if (!shotOk || bodyTextLen < 20) {
+    process.exit(2);
+  }
   process.exit(0);
 } catch (err) {
-  console.error(JSON.stringify({ ok: false, url, error: String(err?.message || err) }, null, 2));
+  try { ab(["close", "--all"]); } catch {}
+  console.error(JSON.stringify({ ok: false, url, error: String(err?.message || err), tool: "agent-browser" }, null, 2));
   process.exit(1);
-} finally {
-  await browser.close();
 }

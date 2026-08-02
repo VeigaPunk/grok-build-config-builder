@@ -1,58 +1,42 @@
 # Agent Config Builders — Titanium
 
 Interactive config builders for **Grok Build**, **Codex**, and **OpenCode**.  
-**Stack: pure Rust** (Axum). No Python.
+**Stack: pure Rust** (Axum). Browser QA via **agent-browser** (not Playwright).
 
 Titanium profiles are the sensible defaults.
 
 ## Live
 
-| Product | URL |
-| --- | --- |
-| **Hub (preview)** | live preview in this workspace |
-| **Grok Build** | https://grok-build-config-builder.vercel.app |
-| **Codex Titanium** | https://codex-titanium-config.vercel.app |
-| **OpenCode Titanium** | https://opencode-titanium-config.vercel.app |
-
-## What you get
-
-- Toggle every setting · download patches · env exports · launch snippets · markdown reference  
-- **Codex** → `~/.codex/config.toml` with `[profiles.titanium]` (gpt-5.4, high effort, workspace-write, multi-agent/hooks/memories)  
-- **OpenCode** → `opencode.json` Titanium build (Sonnet/Haiku, plan mode, scout, subagents, bash=ask)  
-- **Grok** → Grok Build CLI `config.toml`  
-- Font: **JetBrainsMonoNL Nerd Font Mono** everywhere  
+| Product | GitHub Pages | Vercel |
+| --- | --- | --- |
+| Hub | https://veigapunk.github.io/grok-build-config-builder/ | — |
+| Grok Build | https://veigapunk.github.io/grok-build-config-builder/grok/ | https://grok-build-config-builder.vercel.app |
+| Codex Titanium | https://veigapunk.github.io/grok-build-config-builder/codex/ | https://codex-titanium-config.vercel.app |
+| OpenCode Titanium | https://veigapunk.github.io/grok-build-config-builder/opencode/ | https://opencode-titanium-config.vercel.app |
 
 ## Run (Rust)
 
 ```bash
-cargo build --manifest-path rust-server/Cargo.toml --release
-./rust-server/target/release/grok-config-server --host 0.0.0.0 --port 8080
-# or
 sh startup.sh
+# multi-product hub on the live preview
 ```
 
-### Endpoints
+## Browser smoke (agent-browser)
 
-- `GET /` — product hub  
-- `GET /codex/` · `GET /opencode/` · `GET /grok/` — builders  
-- `GET /api/{product}/schema`  
-- `POST /api/{product}/generate` — `{ enabled, values }`  
-- `GET /healthz`  
+```bash
+npm i -g agent-browser && agent-browser install
+node scripts/browser-smoke.mjs http://127.0.0.1:8080/
+node scripts/browser-smoke.mjs http://127.0.0.1:8080/codex/
+```
 
 ## Layout
 
 ```
-rust-server/
-  src/products/{grok,codex,opencode}.rs
-  static/{index.html,app.js,styles.css}
-vercel-static/          # CDN schemas + product app.js
-vercel-deploy-codex/    # Vercel shell for Codex
-vercel-deploy-opencode/ # Vercel shell for OpenCode
+rust-server/          # Axum multi-product API + SPA
+pages-multi/          # Static multi-product site (GitHub Pages source)
+vercel-product-*/     # Per-product Vercel static packages
+scripts/browser-smoke.mjs  # agent-browser smoke (default)
 ```
-
-## Repo
-
-https://github.com/VeigaPunk/grok-build-config-builder
 
 ## License
 

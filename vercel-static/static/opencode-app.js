@@ -1,5 +1,12 @@
 (() => {
-  const PRODUCT = "opencode";
+  const PRODUCT =
+    (document.body && document.body.getAttribute("data-product")) ||
+    location.pathname.replace(/\/+$/, "").split("/").filter(Boolean).pop() ||
+    "grok";
+  const BASE = (document.body && document.body.getAttribute("data-base")) || "";
+  const SCHEMA_URL =
+    (document.body && document.body.getAttribute("data-schema")) ||
+    (BASE + "static/schemas/" + PRODUCT + ".json");
   const state = {
     schema: null,
     enabled: new Set(),
@@ -165,7 +172,7 @@
     const note = state.schema.versionNote || state.schema.version_note || "pure Rust";
     const tab = (id, lab) => `<button type="button" class="btn pill ${state.tab === id ? "active" : ""}" data-tab="${id}">${lab}</button>`;
     let body = state.tab === "builder" ? builder() : state.tab === "preview" ? await preview() : reference();
-    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="/" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
+    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
     bind(root);
   }
   function bind(root) {
@@ -239,8 +246,17 @@
     });
   }
   (async () => {
-    const r = await fetch("https://cdn.jsdelivr.net/gh/VeigaPunk/grok-build-config-builder@main/vercel-static/opencode-schema.json");
-    state.schema = await r.json();
+    let schema = null;
+    try {
+      const ar = await fetch("/api/" + state.product + "/schema");
+      if (ar.ok) schema = await ar.json();
+    } catch (_) {}
+    if (!schema) {
+      const r = await fetch(SCHEMA_URL);
+      if (!r.ok) throw new Error("schema " + r.status + " " + SCHEMA_URL);
+      schema = await r.json();
+    }
+    state.schema = schema;
     if (state.schema.cli_flags) state.schema.cliFlags = state.schema.cli_flags;
     if (state.schema.env_vars) state.schema.envVars = state.schema.env_vars;
     state.enabled = new Set(state.schema.presets[0].enabled);

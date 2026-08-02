@@ -22,7 +22,11 @@
     "server:rust:build": "cargo build --manifest-path rust-server/Cargo.toml --release",
     "start": "bash scripts/with-fnm.sh npm run build:static && cargo run --manifest-path rust-server/Cargo.toml --release -- --static-dir dist-static --host 0.0.0.0 --port 8080",
     "build:static": "vite build --config vite.static.config.ts && node -e \"const fs=require('fs');const p='dist-static/index.static.html';if(fs.existsSync(p))fs.renameSync(p,'dist-static/index.html')\"",
-    "build:static:fnm": "bash scripts/with-fnm.sh npm run build:static"
+    "build:static:fnm": "bash scripts/with-fnm.sh npm run build:static",
+    "smoke": "node scripts/browser-smoke.mjs",
+    "smoke:hub": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/ /workspace/screenshots/hub.png",
+    "smoke:codex": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/codex/ /workspace/screenshots/codex.png",
+    "smoke:opencode": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/opencode/ /workspace/screenshots/opencode.png"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.3",

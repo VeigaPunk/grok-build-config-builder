@@ -1,8 +1,12 @@
 (() => {
   const PRODUCT =
     (document.body && document.body.getAttribute("data-product")) ||
-    location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] ||
+    location.pathname.replace(/\/+$/, "").split("/").filter(Boolean).pop() ||
     "grok";
+  const BASE = (document.body && document.body.getAttribute("data-base")) || "";
+  const SCHEMA_URL =
+    (document.body && document.body.getAttribute("data-schema")) ||
+    (BASE + "static/schemas/" + PRODUCT + ".json");
   const state = {
     schema: null,
     enabled: new Set(),
@@ -55,15 +59,50 @@
     return v;
   }
   async function gen() {
-    const r = await fetch("/api/" + state.product + "/generate", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ enabled: [...state.enabled], values: state.values }),
-    });
-    if (!r.ok) throw new Error("gen");
-    const j = await r.json();
-    if (j.config && !j.toml) j.toml = j.config;
-    return j;
+    // lightweight client generate
+    const schema = state.schema, enabled = [...state.enabled], values = state.values;
+    const en = new Set(enabled);
+    const fmt = schema.format || "toml";
+    if (fmt === "json") {
+      const root = { "$schema": "https://opencode.ai/config.json", "_comment": "OpenCode Titanium" };
+      for (const f of schema.fields) {
+        if (!en.has(f.id) || values[f.id] == null || values[f.id] === "") continue;
+        const parts = f.path.split(".");
+        let cur = root;
+        for (let i = 0; i < parts.length - 1; i++) { cur[parts[i]] = cur[parts[i]] || {}; cur = cur[parts[i]]; }
+        let v = values[f.id];
+        if (f.type === "string-list" && typeof v === "string") v = v.split(",").map(s=>s.trim()).filter(Boolean);
+        if (f.id === "autoupdate") { if (v === "true") v = true; else if (v === "false") v = false; }
+        cur[parts[parts.length-1]] = v;
+      }
+      if (en.has("default_agent")) root.agent = { build: { description: "Titanium build", prompt: "Ship working code." }, plan: { description: "Plan", prompt: "Plan first." }, scout: { description: "Scout", prompt: "Research." } };
+      const config = JSON.stringify(root, null, 2);
+      return { config, toml: config, env: "export OPENCODE_EXPERIMENTAL=1\n", cli: "opencode\n", markdown: "# OpenCode Titanium\n" };
+    }
+    const lines = []; const sections = {};
+    for (const f of schema.fields) {
+      if (!en.has(f.id) || values[f.id] == null || values[f.id] === "") continue;
+      let formatted; const v = values[f.id];
+      if (f.type === "boolean") formatted = v ? "true" : "false";
+      else if (f.type === "number") formatted = String(v);
+      else if (f.type === "string-list") {
+        const list = Array.isArray(v) ? v : String(v).split(",").map(s=>s.trim()).filter(Boolean);
+        if (!list.length) continue;
+        formatted = "[" + list.map(s => JSON.stringify(s)).join(", ") + "]";
+      } else formatted = JSON.stringify(String(v));
+      if (f.section) (sections[f.section] ||= []).push(f.path.split(".").pop() + " = " + formatted);
+      else if (f.id.startsWith("provider.") && f.id !== "provider.id") {
+        const pid = values["provider.id"] || "custom";
+        (sections["model_providers." + pid] ||= []).push(f.id.replace("provider.", "") + " = " + formatted);
+      } else if (f.id !== "provider.id") lines.push(f.path + " = " + formatted);
+    }
+    let out = "# Generated Titanium config\n\n" + lines.join("\n") + "\n\n";
+    for (const [sec, ls] of Object.entries(sections)) out += "[" + sec + "]\n" + ls.join("\n") + "\n\n";
+    if ((schema.product || "") === "codex") {
+      out += "[profiles.titanium]\n";
+      if (en.has("model") && values.model) out += "model = " + JSON.stringify(String(values.model)) + "\n";
+    }
+    return { config: out, toml: out, env: "# env\n", cli: schema.product === "codex" ? "codex --profile titanium\n" : "opencode\n", markdown: "# Ref\n" };
   }
   function sw(on) {
     return `<label class="switch"><input type="checkbox"${on ? " checked" : ""} /><span class="track"><span class="thumb"></span></span></label>`;
@@ -133,7 +172,7 @@
     const note = state.schema.versionNote || state.schema.version_note || "pure Rust";
     const tab = (id, lab) => `<button type="button" class="btn pill ${state.tab === id ? "active" : ""}" data-tab="${id}">${lab}</button>`;
     let body = state.tab === "builder" ? builder() : state.tab === "preview" ? await preview() : reference();
-    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="/" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
+    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
     bind(root);
   }
   function bind(root) {
@@ -207,8 +246,17 @@
     });
   }
   (async () => {
-    const r = await fetch("/api/" + state.product + "/schema");
-    state.schema = await r.json();
+    let schema = null;
+    try {
+      const ar = await fetch("/api/" + state.product + "/schema");
+      if (ar.ok) schema = await ar.json();
+    } catch (_) {}
+    if (!schema) {
+      const r = await fetch(SCHEMA_URL);
+      if (!r.ok) throw new Error("schema " + r.status + " " + SCHEMA_URL);
+      schema = await r.json();
+    }
+    state.schema = schema;
     if (state.schema.cli_flags) state.schema.cliFlags = state.schema.cli_flags;
     if (state.schema.env_vars) state.schema.envVars = state.schema.env_vars;
     state.enabled = new Set(state.schema.presets[0].enabled);
