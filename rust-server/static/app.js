@@ -59,14 +59,36 @@
     return v;
   }
   async function gen() {
-    // lightweight client generate
-    const schema = state.schema, enabled = [...state.enabled], values = state.values;
+    const enabled = [...state.enabled];
+    const values = state.values;
+    // Prefer server generate (full env/cli/markdown + correct nesting)
+    try {
+      const r = await fetch("/api/" + state.product + "/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled, values }),
+      });
+      if (r.ok) {
+        const out = await r.json();
+        const config = out.config || out.toml || "";
+        return {
+          config,
+          toml: out.toml || config,
+          env: out.env || "",
+          cli: out.cli || "",
+          markdown: out.markdown || "",
+        };
+      }
+    } catch (_) {}
+    // Fallback client generate if API unavailable (static Pages deploy)
+    const schema = state.schema;
     const en = new Set(enabled);
     const fmt = schema.format || "toml";
     if (fmt === "json") {
       const root = { "$schema": "https://opencode.ai/config.json", "_comment": "OpenCode Titanium" };
       for (const f of schema.fields) {
         if (!en.has(f.id) || values[f.id] == null || values[f.id] === "") continue;
+        if (String(f.id).startsWith("mcp.demo.") && f.id !== "mcp.demo.url") continue;
         const parts = f.path.split(".");
         let cur = root;
         for (let i = 0; i < parts.length - 1; i++) { cur[parts[i]] = cur[parts[i]] || {}; cur = cur[parts[i]]; }
@@ -76,6 +98,9 @@
         cur[parts[parts.length-1]] = v;
       }
       if (en.has("default_agent")) root.agent = { build: { description: "Titanium build", prompt: "Ship working code." }, plan: { description: "Plan", prompt: "Plan first." }, scout: { description: "Scout", prompt: "Research." } };
+      if (en.has("mcp.demo.enabled") && values["mcp.demo.enabled"] === true) {
+        root.mcp = { demo: { type: values["mcp.demo.type"] || "remote", url: values["mcp.demo.url"] || "https://mcp.example.com/sse", enabled: true } };
+      }
       const config = JSON.stringify(root, null, 2);
       return { config, toml: config, env: "export OPENCODE_EXPERIMENTAL=1\n", cli: "opencode\n", markdown: "# OpenCode Titanium\n" };
     }
@@ -90,11 +115,18 @@
         if (!list.length) continue;
         formatted = "[" + list.map(s => JSON.stringify(s)).join(", ") + "]";
       } else formatted = JSON.stringify(String(v));
-      if (f.section) (sections[f.section] ||= []).push(f.path.split(".").pop() + " = " + formatted);
-      else if (f.id.startsWith("provider.") && f.id !== "provider.id") {
+      if (f.id.startsWith("provider.") && f.id !== "provider.id") {
         const pid = values["provider.id"] || "custom";
         (sections["model_providers." + pid] ||= []).push(f.id.replace("provider.", "") + " = " + formatted);
-      } else if (f.id !== "provider.id") lines.push(f.path + " = " + formatted);
+      } else if (f.id.startsWith("mcp.") && f.id !== "mcp.id") {
+        const mid = values["mcp.id"] || "sample";
+        const key = f.id.replace("mcp.", "");
+        (sections["mcp_servers." + mid] ||= []).push(key + " = " + formatted);
+      } else if (f.section) {
+        (sections[f.section] ||= []).push(f.path.split(".").pop() + " = " + formatted);
+      } else if (f.id !== "provider.id" && f.id !== "mcp.id" && f.id !== "model.custom.id") {
+        lines.push(f.path + " = " + formatted);
+      }
     }
     let out = "# Generated Titanium config\n\n" + lines.join("\n") + "\n\n";
     for (const [sec, ls] of Object.entries(sections)) out += "[" + sec + "]\n" + ls.join("\n") + "\n\n";
@@ -102,7 +134,7 @@
       out += "[profiles.titanium]\n";
       if (en.has("model") && values.model) out += "model = " + JSON.stringify(String(values.model)) + "\n";
     }
-    return { config: out, toml: out, env: "# env\n", cli: schema.product === "codex" ? "codex --profile titanium\n" : "opencode\n", markdown: "# Ref\n" };
+    return { config: out, toml: out, env: "# env\n", cli: schema.product === "codex" ? "codex --profile titanium\n" : "grok\n", markdown: "# Ref\n" };
   }
   function sw(on) {
     return `<label class="switch"><input type="checkbox"${on ? " checked" : ""} /><span class="track"><span class="thumb"></span></span></label>`;
@@ -161,7 +193,7 @@
     const flags = (s.cliFlags || []).map((f) => `<tr><td>${esc(f.flag)}</td><td>${esc(f.category)}</td><td>${esc(f.description)}</td></tr>`).join("");
     const envs = (s.envVars || []).map((e) => `<tr><td>${esc(e.name)}</td><td>${esc(e.category)}</td><td>${esc(e.description)}</td></tr>`).join("");
     const subs = (s.subcommands || []).map((c) => `<div class="panel" style="padding:8px 12px;background:var(--bg)"><code>${esc(c.cmd)}</code><p style="margin:4px 0 0;font-size:12px;color:var(--fg-muted)">${esc(c.desc)}</p></div>`).join("");
-    return `<div><div class="row" style="justify-content:space-between;margin-bottom:16px"><p style="margin:0;color:var(--fg-muted);font-size:13px">Reference · ${esc(s.configPath || s.config_path || "")}</p><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button></div><article class="panel ref-article"><section><h2>Subcommands</h2><div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${subs}</div></section><section><h2>Flags</h2><div class="table-scroll"><table><thead><tr><th>Flag</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${flags}</tbody></table></div></section><section><h2>Env</h2><div class="table-scroll"><table><thead><tr><th>Var</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${envs}</tbody></table></div></section></article></div>`;
+    return `<div><div class="row" style="justify-content:space-between;margin-bottom:16px"><p style="margin:0;color:var(--fg-muted);font-size:13px">Reference · ${esc(s.configPath || s.config_path || "")} · ${(s.fields||[]).length} knobs · ${(s.cliFlags||[]).length} flags · ${(s.envVars||[]).length} env · ${(s.subcommands||[]).length} commands</p><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button></div><article class="panel ref-article"><section><h2>Subcommands</h2><div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${subs}</div></section><section><h2>Flags</h2><div class="table-scroll"><table><thead><tr><th>Flag</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${flags}</tbody></table></div></section><section><h2>Env</h2><div class="table-scroll"><table><thead><tr><th>Var</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${envs}</tbody></table></div></section></article></div>`;
   }
   async function render() {
     const root = $("#app");
@@ -172,7 +204,7 @@
     const note = state.schema.versionNote || state.schema.version_note || "pure Rust";
     const tab = (id, lab) => `<button type="button" class="btn pill ${state.tab === id ? "active" : ""}" data-tab="${id}">${lab}</button>`;
     let body = state.tab === "builder" ? builder() : state.tab === "preview" ? await preview() : reference();
-    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
+    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · ${(state.schema.fields||[]).length} knobs · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
     bind(root);
   }
   function bind(root) {

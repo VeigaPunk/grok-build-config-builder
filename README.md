@@ -5,6 +5,8 @@ Interactive config builders for **Grok Build**, **Codex**, and **OpenCode**.
 
 Titanium profiles are the sensible defaults.
 
+Schemas are exhaustive against each CLI's official docs: config keys, flags, env vars, and subcommands for Grok Build, Codex, and OpenCode.
+
 ## Live
 
 | Product | GitHub Pages | Vercel |

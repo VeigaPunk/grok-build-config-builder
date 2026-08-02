@@ -88,6 +88,24 @@ fn resolve_key(
         let key = field.id.strip_prefix("model.custom.").unwrap_or(field.id);
         return Some((format!("model.\"{}\"", model_id), key.to_string()));
     }
+    if field.id.starts_with("mcp.") {
+        if field.id == "mcp.id" {
+            return None;
+        }
+        let mcp_id = values
+            .get("mcp.id")
+            .and_then(|v| v.as_str())
+            .unwrap_or("filesystem");
+        let key = match field.id {
+            "mcp.enabled" => "enabled",
+            "mcp.command" => "command",
+            "mcp.args" => "args",
+            "mcp.startup_timeout_sec" => "startup_timeout_sec",
+            "mcp.tool_timeout_sec" => "tool_timeout_sec",
+            _ => return None,
+        };
+        return Some((format!("mcp_servers.{}", mcp_id), key.into()));
+    }
     if field.path.starts_with("permissions.") {
         let key = field.path.strip_prefix("permissions.").unwrap();
         return match key {
@@ -111,7 +129,14 @@ fn resolve_key(
     match parts.len() {
         2 => Some((parts[0].into(), parts[1].into())),
         3 => Some((format!("{}.{}", parts[0], parts[1]), parts[2].into())),
-        _ => Some((field.section.into(), parts.last().unwrap_or(&field.id).to_string())),
+        4 => Some((
+            format!("{}.{}.{}", parts[0], parts[1], parts[2]),
+            parts[3].into(),
+        )),
+        _ => Some((
+            field.section.into(),
+            parts.last().unwrap_or(&field.id).to_string(),
+        )),
     }
 }
 
@@ -141,20 +166,28 @@ pub fn generate_toml(req: &GenerateRequest) -> String {
 
     let order = [
         "models",
+        "endpoints",
         "sandbox",
         "permissions",
         "session",
         "cli",
         "hints",
         "ui",
+        "ui.display_refresh",
+        "ui.contextual_hints",
         "tools",
         "features",
+        "memory",
+        "subagents",
+        "skills",
         "harness",
         "telemetry",
         "auth",
         "auth.oidc",
         "grok_com_config",
         "plugins",
+        "compat.cursor",
+        "compat.claude",
     ];
 
     let mut body = String::new();
@@ -275,15 +308,22 @@ pub fn generate_cli(req: &GenerateRequest) -> String {
     {
         parts.push("--always-approve".into());
     }
-    if enabled.contains("features.memory") {
-        match req.values.get("features.memory").and_then(|v| v.as_bool()) {
+    if enabled.contains("features.memory") || enabled.contains("memory.enabled") {
+        let mem = req
+            .values
+            .get("memory.enabled")
+            .or_else(|| req.values.get("features.memory"))
+            .and_then(|v| v.as_bool());
+        match mem {
             Some(true) => parts.push("--experimental-memory".into()),
             Some(false) => parts.push("--no-memory".into()),
             None => {}
         }
     }
-    if enabled.contains("features.subagents")
-        && req.values.get("features.subagents").and_then(|v| v.as_bool()) == Some(false)
+    if (enabled.contains("features.subagents")
+        && req.values.get("features.subagents").and_then(|v| v.as_bool()) == Some(false))
+        || (enabled.contains("subagents.enabled")
+            && req.values.get("subagents.enabled").and_then(|v| v.as_bool()) == Some(false))
     {
         parts.push("--no-subagents".into());
     }
