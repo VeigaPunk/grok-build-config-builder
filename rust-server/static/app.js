@@ -102,11 +102,12 @@
   }
 
   function escapeHtml(s) {
+    const e = (n) => String.fromCharCode(38) + n + ";";
     return String(s)
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, """);
+      .replace(/&/g, e("amp"))
+      .replace(/</g, e("lt"))
+      .replace(/>/g, e("gt"))
+      .replace(/"/g, e("quot"));
   }
 
   function escapeAttr(s) {
