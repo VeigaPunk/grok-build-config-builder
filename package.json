@@ -14,7 +14,15 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:pages": "vite build --config vite.pages.config.ts",
-    "build:all": "npm run build && npm run build:pages"
+    "build:all": "npm run build && npm run build:pages",
+    "dev:fnm": "bash scripts/with-fnm.sh npm run dev",
+    "build:fnm": "bash scripts/with-fnm.sh npm run build",
+    "build:pages:fnm": "bash scripts/with-fnm.sh npm run build:pages",
+    "server:rust": "cargo run --manifest-path rust-server/Cargo.toml --release -- --static-dir dist-static --host 0.0.0.0 --port 8080",
+    "server:rust:build": "cargo build --manifest-path rust-server/Cargo.toml --release",
+    "start": "bash scripts/with-fnm.sh npm run build:static && cargo run --manifest-path rust-server/Cargo.toml --release -- --static-dir dist-static --host 0.0.0.0 --port 8080",
+    "build:static": "vite build --config vite.static.config.ts && node -e \"const fs=require('fs');const p='dist-static/index.static.html';if(fs.existsSync(p))fs.renameSync(p,'dist-static/index.html')\"",
+    "build:static:fnm": "bash scripts/with-fnm.sh npm run build:static"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.3",
@@ -70,7 +78,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/node": "^22.16.5",
+    "@types/node": "^24.0.0",
     "@types/pg": "^8.11.10",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
@@ -90,5 +98,8 @@
     "vite": "^8.1.0"
   },
   "description": "Interactive Grok Build CLI config reference and patch builder",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=24 <25"
+  }
 }

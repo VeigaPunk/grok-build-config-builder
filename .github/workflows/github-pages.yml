@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: npm
 
       - name: Install
@@ -38,16 +38,10 @@ jobs:
           fi
           cp dist-pages/index.html dist-pages/404.html
           mkdir -p dist-pages/docs
-          cp -r public/docs/* dist-pages/docs/ 2>/dev/null || true
-          cp grok-build-cli-config-reference.md dist-pages/docs/ 2>/dev/null || true
-          touch dist-pages/.nojekyll
 
-      - name: Publish to gh-pages branch
+      - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist-pages
-          publish_branch: gh-pages
           force_orphan: true
-          enable_jekyll: false
-          cname: ""

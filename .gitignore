@@ -20,3 +20,8 @@ screenshots/*.png
 .idea/
 .grok/
 vendor/
+
+# Rust
+rust-server/target/
+**/target/
+dist-static/
