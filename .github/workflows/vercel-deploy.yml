@@ -1,40 +1,56 @@
 name: Deploy Vercel
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Requires repository secrets:
+    # Set these repository secrets after importing the project on Vercel once:
     #   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
-    # Create them after linking the project once with `vercel link`.
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    # Or skip this workflow and use Vercel's GitHub integration (recommended).
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check secrets
+        id: check
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "VERCEL_TOKEN not set — skipping automated deploy."
+            echo "Import the repo at https://vercel.com/new/clone?repository-url=https://github.com/VeigaPunk/grok-build-config-builder"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
       - name: Setup Node
+        if: steps.check.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
-      - name: Install
+      - name: Install deps
+        if: steps.check.outputs.skip != 'true'
         run: npm ci
 
       - name: Install Vercel CLI
+        if: steps.check.outputs.skip != 'true'
         run: npm install -g vercel@latest
 
       - name: Pull Vercel env
+        if: steps.check.outputs.skip != 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build
+        if: steps.check.outputs.skip != 'true'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy prebuilt
+        if: steps.check.outputs.skip != 'true'
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

@@ -6,16 +6,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,31 +31,23 @@ jobs:
       - name: Build static Pages site
         run: npm run build:pages
 
-      - name: Fix SPA entry name for Pages
+      - name: Prepare publish folder
         run: |
-          # Vite emits pages.html; GitHub Pages needs index.html at site root
           if [ -f dist-pages/pages.html ]; then
             mv dist-pages/pages.html dist-pages/index.html
           fi
-          # SPA fallback for client routes
           cp dist-pages/index.html dist-pages/404.html
-          # Copy markdown docs into site
           mkdir -p dist-pages/docs
           cp -r public/docs/* dist-pages/docs/ 2>/dev/null || true
           cp grok-build-cli-config-reference.md dist-pages/docs/ 2>/dev/null || true
+          touch dist-pages/.nojekyll
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: dist-pages
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist-pages
+          publish_branch: gh-pages
+          force_orphan: true
+          enable_jekyll: false
+          cname: ""
