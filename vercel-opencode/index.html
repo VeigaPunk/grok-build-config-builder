@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>opencode Titanium Config Builder</title>
+<style>
+/* JetBrains Mono NL Nerd Font — always */
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Regular/JetBrainsMonoNLNerdFontMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Medium/JetBrainsMonoNLNerdFontMono-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFontMono-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Bold/JetBrainsMonoNLNerdFontMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #0a0a0b;
+  --bg-elevated: #121214;
+  --bg-subtle: #1a1a1e;
+  --fg: #f4f4f5;
+  --fg-muted: #a1a1aa;
+  --fg-subtle: #71717a;
+  --border: color-mix(in oklab, var(--fg) 12%, transparent);
+  --border-strong: color-mix(in oklab, var(--fg) 22%, transparent);
+  --accent: #c8ccd4;
+  --accent-fg: #0a0a0b;
+  --success: #6ee7b7;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font: "JetBrainsMonoNL Nerd Font Mono", "JetBrains Mono NL", ui-monospace, monospace;
+  --mono: "JetBrainsMonoNL Nerd Font Mono", "JetBrains Mono NL", ui-monospace, monospace;
+  --shadow: 0 8px 30px color-mix(in oklab, #000 35%, transparent);
+}
+
+*, *::before, *::after { box-sizing: border-box; border-color: var(--border); }
+html { color-scheme: dark; overflow-x: hidden; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea, pre, code {
+  font-family: inherit;
+  font-variant-ligatures: none;
+}
+button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.mono { font-family: var(--mono); }
+.panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 10px;
+}
+.badge.success {
+  border-color: color-mix(in oklab, var(--success) 30%, transparent);
+  background: color-mix(in oklab, var(--success) 10%, transparent);
+  color: var(--success);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 150ms, transform 150ms, border-color 150ms;
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.btn:active { transform: scale(0.98); }
+.btn:hover { opacity: 0.9; }
+.btn.secondary {
+  background: var(--bg-subtle);
+  color: var(--fg);
+  border-color: var(--border);
+}
+.btn.secondary:hover { border-color: var(--border-strong); }
+.btn.outline {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--fg-muted);
+}
+.btn.sm { min-height: 32px; padding: 4px 12px; font-size: 12px; border-radius: var(--radius-xs); }
+.btn.pill {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--fg-muted);
+}
+.btn.pill.active {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
+}
+
+header.app {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+}
+.wrap {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 16px;
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .wrap { padding: 16px 24px; }
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+h1 {
+  margin: 4px 0 0;
+  font-size: clamp(1.35rem, 3vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lede {
+  margin: 4px 0 0;
+  max-width: 42rem;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.header-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.tabs { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+
+.layout {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 240px minmax(0, 1fr); }
+}
+
+.sidebar { display: none; min-width: 0; }
+@media (min-width: 1024px) {
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: 9rem;
+    align-self: start;
+  }
+}
+.sidebar .panel, .mobile-strip .panel { padding: 16px; margin-bottom: 16px; }
+.sidebar h3, .section-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.preset-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.preset-btn:hover { border-color: var(--border-strong); }
+.preset-btn strong { display: block; font-size: 13px; }
+.preset-btn span { display: block; margin-top: 2px; font-size: 11px; color: var(--fg-muted); }
+
+.mobile-strip { display: block; min-width: 0; }
+@media (min-width: 1024px) { .mobile-strip { display: none; } }
+.mobile-presets {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.mobile-presets .btn { flex-shrink: 0; }
+
+.search {
+  width: 100%;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg);
+  padding: 8px 12px 8px 36px;
+  font-size: 13px;
+}
+.search::placeholder { color: var(--fg-subtle); }
+.search-wrap { position: relative; margin-bottom: 16px; min-width: 0; }
+.search-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--fg-subtle);
+  pointer-events: none;
+}
+
+.group {
+  overflow: hidden;
+  margin-bottom: 16px;
+  min-width: 0;
+}
+.group-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 20px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-align: left;
+}
+.group-head:hover { background: color-mix(in oklab, var(--bg-subtle) 40%, transparent); }
+.group-head h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.group-head p { margin: 2px 0 0; font-size: 12px; color: var(--fg-muted); }
+.group-body {
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.group.collapsed .group-body { display: none; }
+.chev { transition: transform 200ms; color: var(--fg-muted); }
+.group:not(.collapsed) .chev { transform: rotate(180deg); }
+
+.field {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  min-width: 0;
+  transition: background 150ms, opacity 150ms;
+}
+.field.on { background: var(--bg-elevated); }
+.field.off { background: color-mix(in oklab, var(--bg) 40%, transparent); opacity: 0.85; }
+.field-row { display: flex; gap: 12px; align-items: flex-start; min-width: 0; }
+.field-main { min-width: 0; flex: 1; }
+.field-title { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.field-title span { font-size: 13px; font-weight: 500; }
+.field-title code {
+  font-size: 11px;
+  color: var(--fg-subtle);
+  word-break: break-all;
+}
+.field p { margin: 6px 0 0; font-size: 12px; color: var(--fg-muted); }
+.field-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.field-meta code {
+  font-size: 11px;
+  color: var(--fg-subtle);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  word-break: break-all;
+}
+.field-controls { margin-top: 10px; min-width: 0; }
+.field-controls input[type="text"],
+.field-controls input[type="number"],
+.field-controls select {
+  width: 100%;
+  max-width: 28rem;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch .track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  transition: background 150ms;
+}
+.switch input:checked + .track { background: var(--accent); }
+.switch .thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--fg-muted);
+  transition: transform 150ms, background 150ms;
+}
+.switch input:checked + .track .thumb {
+  transform: translateX(20px);
+  background: var(--accent-fg);
+}
+
+.preview-grid {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .preview-grid { grid-template-columns: 1fr 1fr; }
+}
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  min-width: 0;
+  overflow: hidden;
+}
+.preview-panel header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+.preview-panel header strong { font-size: 13px; }
+.preview-panel header p { margin: 0; font-size: 11px; color: var(--fg-muted); }
+.preview-panel pre {
+  flex: 1;
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+  background: var(--bg);
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  scrollbar-width: thin;
+}
+
+.ref-article { padding: 16px; min-width: 0; }
+@media (min-width: 640px) { .ref-article { padding: 32px; } }
+.ref-article h2 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+.ref-article section { margin-bottom: 32px; }
+.ref-article pre {
+  overflow-x: auto;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.ref-article table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+.ref-article th {
+  padding: 8px 16px 8px 0;
+  font-weight: 500;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--border);
+}
+.ref-article td {
+  padding: 8px 16px 8px 0;
+  color: var(--fg-muted);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  vertical-align: top;
+}
+.table-scroll { overflow-x: auto; }
+
+footer.app {
+  border-top: 1px solid var(--border);
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+
+.sticky-bar {
+  position: sticky;
+  bottom: 16px;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg-elevated) 95%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+@media (min-width: 1024px) { .sticky-bar { display: none; } }
+.sticky-bar .btn { flex: 1; min-height: 44px; }
+
+.hidden { display: none !important; }
+.ml-auto { margin-left: auto; }
+@media (max-width: 639px) {
+  .hide-sm { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+</style>
+</head>
+<body data-product="opencode">
+<div id="app"><div class="wrap" style="padding:48px;color:var(--fg-muted)">Loading…</div></div>
+<script>
+
+window.__STATIC_SCHEMA__ = {"cliFlags":[{"category":"Session","description":"Start TUI","flag":"opencode"},{"category":"Session","description":"Headless run","flag":"opencode run \"<prompt>\""},{"category":"Server","description":"Headless API server","flag":"opencode serve"},{"category":"Server","description":"Server + web UI","flag":"opencode web"},{"category":"Global","description":"No external plugins","flag":"--pure"},{"category":"Global","description":"DEBUG|INFO|WARN|ERROR","flag":"--log-level <LEVEL>"},{"category":"Global","description":"Logs to stderr","flag":"--print-logs"},{"category":"MCP","description":"MCP management","flag":"opencode mcp add|list|auth"},{"category":"Models","description":"List models","flag":"opencode models"},{"category":"Agents","description":"Agents","flag":"opencode agent create|list"}],"configPath":"~/.config/opencode/opencode.json","envVars":[{"category":"Paths","description":"Path to config file","name":"OPENCODE_CONFIG"},{"category":"Paths","description":"Config directory","name":"OPENCODE_CONFIG_DIR"},{"category":"Paths","description":"Inline JSON overrides","name":"OPENCODE_CONFIG_CONTENT"},{"category":"UX","description":"Disable update checks","name":"OPENCODE_DISABLE_AUTOUPDATE"},{"category":"Context","description":"Disable auto compact","name":"OPENCODE_DISABLE_AUTOCOMPACT"},{"category":"Experimental","description":"Umbrella experimental flag","name":"OPENCODE_EXPERIMENTAL"},{"category":"Experimental","description":"Plan mode","name":"OPENCODE_EXPERIMENTAL_PLAN_MODE"},{"category":"Experimental","description":"Background subagents","name":"OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS"},{"category":"Experimental","description":"Scout subagent","name":"OPENCODE_EXPERIMENTAL_SCOUT"},{"category":"Server","description":"Basic auth for serve/web","name":"OPENCODE_SERVER_PASSWORD"}],"fields":[{"default":"anthropic/claude-sonnet-4-6","description":"provider/model id, e.g. anthropic/claude-sonnet-4-6 or openai/gpt-5.4.","group":"models","id":"model","label":"Primary model","path":"model","recommended":true,"section":"","type":"string"},{"default":"anthropic/claude-haiku-4-5","description":"Cheap model for titles / light tasks.","group":"models","id":"small_model","label":"Small model","path":"small_model","recommended":true,"section":"","type":"string"},{"default":["anthropic","openai","openrouter"],"description":"Comma-separated allow-list of provider ids.","group":"models","id":"enabled_providers","label":"Enabled providers","path":"enabled_providers","section":"","type":"string-list"},{"description":"Comma-separated deny-list.","group":"models","id":"disabled_providers","label":"Disabled providers","path":"disabled_providers","section":"","type":"string-list"},{"default":"build","description":"build | plan | or custom agent id.","group":"agents","id":"default_agent","label":"Default agent","path":"default_agent","recommended":true,"section":"","type":"string"},{"default":2.0,"description":"Max nesting (0 disables).","group":"agents","id":"subagent_depth","label":"Subagent depth","path":"subagent_depth","recommended":true,"section":"","type":"number"},{"default":true,"description":"Allow write tool.","group":"tools","id":"tools.write","label":"Write tool","path":"tools.write","section":"tools","type":"boolean"},{"default":true,"description":"Allow bash tool.","group":"tools","id":"tools.bash","label":"Bash tool","path":"tools.bash","section":"tools","type":"boolean"},{"default":"allow","description":"allow | ask | deny for edits.","group":"tools","id":"edit","label":"Edit permission","options":["allow","ask","deny"],"path":"edit","recommended":true,"section":"","type":"enum"},{"default":"ask","description":"allow | ask | deny for bash.","env":"OPENCODE_PERMISSION","group":"tools","id":"bash","label":"Bash permission","options":["allow","ask","deny"],"path":"bash","recommended":true,"section":"","type":"enum"},{"default":true,"description":"Automatically compact long contexts.","env":"OPENCODE_DISABLE_AUTOCOMPACT","group":"compaction","id":"compaction.auto","label":"Auto compact","path":"compaction.auto","recommended":true,"section":"compaction","type":"boolean"},{"default":true,"description":"Prune old turns when compacting.","group":"compaction","id":"compaction.prune","label":"Prune on compact","path":"compaction.prune","section":"compaction","type":"boolean"},{"default":12000.0,"description":"Token buffer reserved during compact.","group":"compaction","id":"compaction.reserved","label":"Reserved tokens","path":"compaction.reserved","section":"compaction","type":"number"},{"default":4096.0,"description":"Port for opencode serve / web.","group":"server","id":"server.port","label":"Server port","path":"server.port","section":"server","type":"number"},{"default":"127.0.0.1","description":"Bind host.","group":"server","id":"server.hostname","label":"Server hostname","path":"server.hostname","section":"server","type":"string"},{"default":false,"description":"Advertise via mDNS.","group":"server","id":"server.mdns","label":"mDNS","path":"server.mdns","section":"server","type":"boolean"},{"default":"system","description":"TUI theme (system or named).","group":"ux","id":"theme","label":"Theme","path":"theme","section":"","type":"string"},{"default":"manual","description":"manual | auto | disabled.","env":"OPENCODE_AUTO_SHARE","group":"ux","id":"share","label":"Share mode","options":["manual","auto","disabled"],"path":"share","section":"","type":"enum"},{"default":"notify","description":"true | false | notify.","env":"OPENCODE_DISABLE_AUTOUPDATE","group":"ux","id":"autoupdate","label":"Autoupdate","options":["true","false","notify"],"path":"autoupdate","section":"","type":"enum"},{"default":true,"description":"Track file changes during session.","group":"ux","id":"snapshot","label":"Snapshot tracking","path":"snapshot","section":"","type":"boolean"},{"description":"Shell binary for tools (empty = auto).","group":"ux","id":"shell","label":"Shell","path":"shell","section":"","type":"string"},{"default":"titanium","description":"Display name in TUI.","group":"ux","id":"username","label":"Username","path":"username","section":"","type":"string"},{"default":true,"description":"Enable experimental plan mode.","env":"OPENCODE_EXPERIMENTAL_PLAN_MODE","group":"experimental","id":"experimental.plan_mode","label":"Plan mode","path":"experimental.plan_mode","recommended":true,"section":"experimental","type":"boolean"},{"default":true,"description":"Run subagents in background.","env":"OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS","group":"experimental","id":"experimental.background_subagents","label":"Background subagents","path":"experimental.background_subagents","recommended":true,"section":"experimental","type":"boolean"},{"default":true,"description":"Enable Scout research subagent.","env":"OPENCODE_EXPERIMENTAL_SCOUT","group":"experimental","id":"experimental.scout","label":"Scout subagent","path":"experimental.scout","recommended":true,"section":"experimental","type":"boolean"},{"default":true,"description":"Enable workspace support.","env":"OPENCODE_EXPERIMENTAL_WORKSPACES","group":"experimental","id":"experimental.workspaces","label":"Workspaces","path":"experimental.workspaces","section":"experimental","type":"boolean"},{"default":true,"description":"Experimental hooks system.","group":"experimental","id":"experimental.hooks","label":"Hooks","path":"experimental.hooks","section":"experimental","type":"boolean"},{"default":true,"description":"Expose LSP as a tool.","env":"OPENCODE_EXPERIMENTAL_LSP_TOOL","group":"experimental","id":"experimental.lsp_tool","label":"LSP tool","path":"experimental.lsp_tool","section":"experimental","type":"boolean"},{"default":true,"description":"Parallel web search execution.","env":"OPENCODE_EXPERIMENTAL_PARALLEL","group":"experimental","id":"experimental.parallel","label":"Parallel search","path":"experimental.parallel","section":"experimental","type":"boolean"},{"default":true,"description":"Enable language servers.","env":"OPENCODE_DISABLE_LSP_DOWNLOAD","group":"lsp","id":"lsp","label":"LSP enabled","path":"lsp","recommended":true,"section":"","type":"boolean"},{"default":true,"description":"Enable code formatters.","group":"lsp","id":"formatter","label":"Formatters enabled","path":"formatter","section":"","type":"boolean"},{"default":false,"description":"Include a sample remote MCP entry.","group":"mcp","id":"mcp.demo.enabled","label":"Demo MCP enabled","path":"mcp.demo.enabled","section":"mcp","type":"boolean"},{"default":"https://mcp.example.com/sse","description":"Remote MCP server URL.","group":"mcp","id":"mcp.demo.url","label":"Demo MCP URL","path":"mcp.demo.url","section":"mcp","type":"string"}],"format":"json","groups":[{"description":"Primary + small models and provider allowlists.","id":"models","title":"Models"},{"description":"Default agent, depth, plan mode.","id":"agents","title":"Agents"},{"description":"write/bash/edit gates and tool toggles.","id":"tools","title":"Tools & permissions"},{"description":"Context auto-compact settings.","id":"compaction","title":"Compaction"},{"description":"opencode serve / web.","id":"server","title":"Server"},{"description":"Theme, share, autoupdate, snapshot, shell.","id":"ux","title":"UX"},{"description":"Plan mode, background subagents, scout, workspaces.","id":"experimental","title":"Experimental"},{"description":"Language intelligence and format-on-write.","id":"lsp","title":"LSP & formatters"},{"description":"Optional remote MCP server stub.","id":"mcp","title":"MCP sample"}],"presets":[{"description":"Wild-but-sane: Sonnet primary, Haiku small, plan mode, scout, background subagents, ask-before-bash, depth 2.","enabled":["model","small_model","enabled_providers","default_agent","subagent_depth","tools.write","tools.bash","edit","bash","compaction.auto","compaction.prune","compaction.reserved","theme","share","autoupdate","snapshot","username","experimental.plan_mode","experimental.background_subagents","experimental.scout","experimental.workspaces","experimental.hooks","experimental.lsp_tool","experimental.parallel","lsp","formatter"],"id":"titanium","name":"Titanium (default)","values":{"autoupdate":"notify","bash":"ask","compaction.auto":true,"compaction.prune":true,"compaction.reserved":12000,"default_agent":"build","edit":"allow","enabled_providers":["anthropic","openai","openrouter"],"experimental.background_subagents":true,"experimental.hooks":true,"experimental.lsp_tool":true,"experimental.parallel":true,"experimental.plan_mode":true,"experimental.scout":true,"experimental.workspaces":true,"formatter":true,"lsp":true,"model":"anthropic/claude-sonnet-4-6","share":"manual","small_model":"anthropic/claude-haiku-4-5","snapshot":true,"subagent_depth":2,"theme":"system","tools.bash":true,"tools.write":true,"username":"titanium"}},{"description":"Everything on: deeper subagents, auto-share off, server bind, demo MCP stub, parallel + scout.","enabled":["model","small_model","default_agent","subagent_depth","tools.write","tools.bash","edit","bash","compaction.auto","server.port","server.hostname","experimental.plan_mode","experimental.background_subagents","experimental.scout","experimental.workspaces","experimental.hooks","experimental.lsp_tool","experimental.parallel","lsp","formatter","mcp.demo.enabled","mcp.demo.url","username","share"],"id":"titanium-max","name":"Titanium Max","values":{"bash":"allow","compaction.auto":true,"default_agent":"build","edit":"allow","experimental.background_subagents":true,"experimental.hooks":true,"experimental.lsp_tool":true,"experimental.parallel":true,"experimental.plan_mode":true,"experimental.scout":true,"experimental.workspaces":true,"formatter":true,"lsp":true,"mcp.demo.enabled":false,"mcp.demo.url":"https://mcp.example.com/sse","model":"anthropic/claude-opus-4-5","server.hostname":"127.0.0.1","server.port":4096,"share":"disabled","small_model":"anthropic/claude-haiku-4-5","subagent_depth":3,"tools.bash":true,"tools.write":true,"username":"titanium-max"}},{"description":"Ask on edit+bash, no background agents, shallow depth.","enabled":["model","small_model","edit","bash","tools.write","tools.bash","subagent_depth","experimental.plan_mode","share"],"id":"safe-pair","name":"Safe pair-programming","values":{"bash":"ask","edit":"ask","experimental.plan_mode":true,"model":"anthropic/claude-sonnet-4-6","share":"disabled","small_model":"anthropic/claude-haiku-4-5","subagent_depth":1,"tools.bash":true,"tools.write":true}},{"description":"Route primary model through OpenAI gpt-5.4 while keeping Titanium UX.","enabled":["model","small_model","enabled_providers","default_agent","subagent_depth","edit","bash","experimental.plan_mode","lsp"],"id":"openai-codex-bridge","name":"OpenAI bridge","values":{"bash":"ask","default_agent":"build","edit":"allow","enabled_providers":["openai"],"experimental.plan_mode":true,"lsp":true,"model":"openai/gpt-5.4","small_model":"openai/gpt-5-mini","subagent_depth":2}}],"product":"opencode","productTagline":"Titanium-grade OpenCode build — agents, MCP, plan mode, subagents, and sharp defaults.","productTitle":"OpenCode Titanium","subcommands":[{"cmd":"opencode","desc":"Interactive TUI"},{"cmd":"opencode run","desc":"Non-interactive prompt"},{"cmd":"opencode serve","desc":"Headless server"},{"cmd":"opencode web","desc":"Web UI server"},{"cmd":"opencode mcp","desc":"MCP servers"},{"cmd":"opencode models","desc":"List models"},{"cmd":"opencode agent","desc":"Manage agents"},{"cmd":"opencode session","desc":"Sessions"},{"cmd":"opencode upgrade","desc":"Self-update"}],"versionNote":"OpenCode · Titanium build · opencode.json · pure Rust builder"};
+window.__STATIC_PRODUCT__ = "opencode";
+
+(() => {
+  const PRODUCT = window.__STATIC_PRODUCT__ || "grok";
+  const state = {
+    schema: null,
+    enabled: new Set(),
+    values: {},
+    tab: "builder",
+    query: "",
+    activeGroup: "all",
+    collapsed: new Set(),
+    product: PRODUCT,
+  };
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = (s) => {
+    const e = (n) => String.fromCharCode(38) + n + ";";
+    return String(s)
+      .replace(/&/g, e("amp"))
+      .replace(/</g, e("lt"))
+      .replace(/>/g, e("gt"))
+      .replace(/"/g, e("quot"));
+  };
+  const toast = (msg) => {
+    let t = $("#toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "toast";
+      Object.assign(t.style, {
+        position: "fixed", bottom: "24px", right: "24px", zIndex: "100",
+        padding: "10px 14px", borderRadius: "8px", background: "#1a1a1e",
+        color: "#f4f4f5", fontSize: "13px", fontFamily: "inherit",
+      });
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = "1";
+    clearTimeout(t._tm);
+    t._tm = setTimeout(() => { t.style.opacity = "0"; }, 1400);
+  };
+  const dl = (name, content, mime) => {
+    const b = new Blob([content], { type: mime });
+    const u = URL.createObjectURL(b);
+    const a = document.createElement("a");
+    a.href = u; a.download = name; a.click();
+    URL.revokeObjectURL(u);
+  };
+  function defaults() {
+    const v = {};
+    for (const f of state.schema.fields) if (f.default != null) v[f.id] = f.default;
+    const p = state.schema.presets && state.schema.presets[0];
+    if (p && p.values) Object.assign(v, p.values);
+    return v;
+  }
+  async function gen() {
+    return clientGenerate(state.schema, [...state.enabled], state.values);
+  }
+  function clientGenerate(schema, enabled, values) {
+    const en = new Set(enabled);
+    const fmt = schema.format || "toml";
+    if (fmt === "json") {
+      const root = { "$schema": "https://opencode.ai/config.json", "_comment": "OpenCode Titanium" };
+      for (const f of schema.fields) {
+        if (!en.has(f.id) || values[f.id] == null || values[f.id] === "") continue;
+        const parts = f.path.split(".");
+        let cur = root;
+        for (let i = 0; i < parts.length - 1; i++) {
+          cur[parts[i]] = cur[parts[i]] || {};
+          cur = cur[parts[i]];
+        }
+        let v = values[f.id];
+        if (f.type === "string-list" && typeof v === "string") v = v.split(",").map(s=>s.trim()).filter(Boolean);
+        if (f.id === "autoupdate") { if (v === "true") v = true; else if (v === "false") v = false; }
+        cur[parts[parts.length-1]] = v;
+      }
+      if (en.has("default_agent")) {
+        root.agent = {
+          build: { description: "Titanium build", prompt: "Ship working code." },
+          plan: { description: "Titanium plan", prompt: "Plan before edits." },
+          scout: { description: "Scout", prompt: "Research and report." }
+        };
+      }
+      const config = JSON.stringify(root, null, 2);
+      return { config, toml: config, env: "# OpenCode Titanium\nexport OPENCODE_EXPERIMENTAL=1\n", cli: "opencode\n", markdown: "# OpenCode Titanium\n" };
+    }
+    // TOML (codex/grok-ish)
+    const lines = [];
+    const sections = {};
+    for (const f of schema.fields) {
+      if (!en.has(f.id) || values[f.id] == null || values[f.id] === "") continue;
+      let formatted;
+      const v = values[f.id];
+      if (f.type === "boolean") formatted = v ? "true" : "false";
+      else if (f.type === "number") formatted = String(v);
+      else if (f.type === "string-list") {
+        const list = Array.isArray(v) ? v : String(v).split(",").map(s=>s.trim()).filter(Boolean);
+        if (!list.length) continue;
+        formatted = "[" + list.map(s => JSON.stringify(s)).join(", ") + "]";
+      } else formatted = JSON.stringify(String(v));
+      if (f.section) {
+        (sections[f.section] ||= []).push((f.path.split(".").pop()) + " = " + formatted);
+      } else if (f.id.startsWith("provider.") && f.id !== "provider.id") {
+        const pid = values["provider.id"] || "custom";
+        (sections["model_providers." + pid] ||= []).push(f.id.replace("provider.", "") + " = " + formatted);
+      } else if (f.id !== "provider.id") {
+        lines.push(f.path + " = " + formatted);
+      }
+    }
+    let out = "# Generated Titanium config\n\n" + lines.join("\n") + "\n\n";
+    for (const [sec, ls] of Object.entries(sections)) {
+      out += "[" + sec + "]\n" + ls.join("\n") + "\n\n";
+    }
+    if ((schema.product || "") === "codex") {
+      out += "[profiles.titanium]\n# codex --profile titanium\n";
+      if (en.has("model") && values.model) out += "model = " + JSON.stringify(String(values.model)) + "\n";
+    }
+    return { config: out, toml: out, env: "# env\n", cli: (schema.product === "codex" ? "codex --profile titanium\n" : "opencode\n"), markdown: "# " + (schema.productTitle||"Config") + "\n" };
+  }
+  function sw(on) {
+    return `<label class="switch"><input type="checkbox"${on ? " checked" : ""} /><span class="track"><span class="thumb"></span></span></label>`;
+  }
+  function fieldHtml(f) {
+    const on = state.enabled.has(f.id);
+    const val = state.values[f.id];
+    let c = "";
+    if (on) {
+      if (f.type === "boolean") {
+        c = `<div class="field-controls row">${sw(!!val)}<span style="font-size:13px;color:var(--fg-muted)">${val ? "true" : "false"}</span></div>`;
+      } else if (f.type === "enum" && f.options) {
+        const cur = String(val ?? f.default ?? f.options[0]);
+        c = `<div class="field-controls"><select data-field="${f.id}">${f.options.map((o) => `<option value="${esc(o)}"${cur === o ? " selected" : ""}>${esc(o)}</option>`).join("")}</select></div>`;
+      } else if (f.type === "string-list") {
+        const v = Array.isArray(val) ? val.join(", ") : val ?? "";
+        c = `<div class="field-controls"><input type="text" data-field="${f.id}" data-list="1" value="${esc(String(v))}" /></div>`;
+      } else {
+        const t = f.type === "number" ? "number" : "text";
+        c = `<div class="field-controls"><input type="${t}" data-field="${f.id}" value="${esc(val == null ? "" : String(val))}" /></div>`;
+      }
+    }
+    return `<div class="field ${on ? "on" : "off"}" data-id="${f.id}"><div class="field-row">${sw(on)}<div class="field-main"><div class="field-title"><span>${esc(f.label)}</span>${f.recommended ? `<span class="badge success">recommended</span>` : ""}<code>${esc(f.path)}</code></div><p>${esc(f.description)}</p>${f.env || f.cli ? `<div class="field-meta">${f.env ? `<code>env ${esc(f.env)}</code>` : ""}${f.cli ? `<code>cli ${esc(f.cli)}</code>` : ""}</div>` : ""}${c}</div></div></div>`;
+  }
+  function groupsFiltered() {
+    const q = state.query.trim().toLowerCase();
+    return state.schema.groups.map((g) => {
+      let fields = state.schema.fields.filter((f) => f.group === g.id);
+      if (state.activeGroup !== "all" && g.id !== state.activeGroup) fields = [];
+      if (q) fields = fields.filter((f) => [f.label, f.path, f.description, f.env || ""].join(" ").toLowerCase().includes(q));
+      return { group: g, fields };
+    }).filter((x) => x.fields.length);
+  }
+  function builder() {
+    const groups = groupsFiltered();
+    const presets = state.schema.presets.map((p) => `<button type="button" class="preset-btn" data-preset="${p.id}"><strong>${esc(p.name)}</strong><span>${esc(p.description)}</span></button>`).join("");
+    const mpres = state.schema.presets.map((p) => `<button type="button" class="btn sm pill" data-preset="${p.id}">${esc(p.name)}</button>`).join("");
+    const secs = state.schema.groups.map((g) => `<button type="button" class="btn ghost sm" data-group="${g.id}" style="width:100%;justify-content:flex-start;border-radius:8px">${esc(g.title)}</button>`).join("");
+    const body = groups.map(({ group, fields }) => {
+      const col = state.collapsed.has(group.id);
+      return `<section class="panel group ${col ? "collapsed" : ""}"><button type="button" class="group-head" data-toggle-group="${group.id}"><div><h2>${esc(group.title)}</h2><p>${esc(group.description)}</p></div><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="group-body">${fields.map(fieldHtml).join("")}</div></section>`;
+    }).join("");
+    return `<div class="layout"><div class="mobile-strip"><div class="mobile-presets">${mpres}</div><div class="row" style="margin-top:12px"><button type="button" class="btn outline sm" data-action="enable-all">Include all</button><button type="button" class="btn outline sm" data-action="clear">Clear</button><button type="button" class="btn ghost sm" data-action="reset">Reset</button></div></div><aside class="sidebar"><div class="panel"><h3>Presets</h3>${presets}</div><div class="panel"><h3>Bulk</h3><button type="button" class="btn outline sm" style="width:100%;margin-bottom:8px" data-action="enable-all">Include all</button><button type="button" class="btn outline sm" style="width:100%;margin-bottom:8px" data-action="clear">Clear all</button><button type="button" class="btn ghost sm" style="width:100%" data-action="reset">Reset defaults</button></div><div class="panel"><h3>Sections</h3><button type="button" class="btn ghost sm" data-group="all" style="width:100%;justify-content:flex-start;border-radius:8px">All sections</button>${secs}</div></aside><div style="min-width:0"><div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input class="search" type="search" placeholder="Search settings" id="search" value="${esc(state.query)}" /></div>${groups.length ? body : `<div class="panel" style="padding:32px;text-align:center;color:var(--fg-muted)">No matches.</div>`}<div class="sticky-bar"><button type="button" class="btn" data-action="download-toml">Download patch</button><button type="button" class="btn secondary" data-action="tab-preview">Preview</button></div></div></div>`;
+  }
+  async function preview() {
+    let g;
+    try { g = await gen(); } catch { return `<div class="panel" style="padding:24px">Generate failed</div>`; }
+    window.__gen = g;
+    const cfgName = state.schema.format === "json" ? "opencode.json" : "config.toml";
+    const path = state.schema.configPath || state.schema.config_path || "";
+    const p = (t, s, c) => `<div class="panel preview-panel"><header><div><strong>${t}</strong><p>${s}</p></div><div class="row"><button type="button" class="btn outline sm" data-copy="1">Copy</button><button type="button" class="btn sm" data-dl="1">Download</button></div></header><pre>${esc(c)}</pre></div>`;
+    return `<div class="preview-grid">${p(cfgName, path, g.toml || g.config)}${p("env", "exports", g.env)}${p("cli", "launch", g.cli)}${p("markdown", "reference", g.markdown)}</div>`;
+  }
+  function reference() {
+    const s = state.schema;
+    const flags = (s.cliFlags || []).map((f) => `<tr><td>${esc(f.flag)}</td><td>${esc(f.category)}</td><td>${esc(f.description)}</td></tr>`).join("");
+    const envs = (s.envVars || []).map((e) => `<tr><td>${esc(e.name)}</td><td>${esc(e.category)}</td><td>${esc(e.description)}</td></tr>`).join("");
+    const subs = (s.subcommands || []).map((c) => `<div class="panel" style="padding:8px 12px;background:var(--bg)"><code>${esc(c.cmd)}</code><p style="margin:4px 0 0;font-size:12px;color:var(--fg-muted)">${esc(c.desc)}</p></div>`).join("");
+    return `<div><div class="row" style="justify-content:space-between;margin-bottom:16px"><p style="margin:0;color:var(--fg-muted);font-size:13px">Reference · ${esc(s.configPath || s.config_path || "")}</p><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button></div><article class="panel ref-article"><section><h2>Subcommands</h2><div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${subs}</div></section><section><h2>Flags</h2><div class="table-scroll"><table><thead><tr><th>Flag</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${flags}</tbody></table></div></section><section><h2>Env</h2><div class="table-scroll"><table><thead><tr><th>Var</th><th>Cat</th><th>Desc</th></tr></thead><tbody>${envs}</tbody></table></div></section></article></div>`;
+  }
+  async function render() {
+    const root = $("#app");
+    if (!root || !state.schema) return;
+    const n = state.enabled.size;
+    const title = state.schema.productTitle || state.schema.product_title || "Config builder";
+    const tag = state.schema.productTagline || state.schema.product_tagline || "";
+    const note = state.schema.versionNote || state.schema.version_note || "pure Rust";
+    const tab = (id, lab) => `<button type="button" class="btn pill ${state.tab === id ? "active" : ""}" data-tab="${id}">${lab}</button>`;
+    let body = state.tab === "builder" ? builder() : state.tab === "preview" ? await preview() : reference();
+    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="/" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
+    bind(root);
+  }
+  function bind(root) {
+    $$("[data-tab]", root).forEach((el) => el.addEventListener("click", () => { state.tab = el.getAttribute("data-tab"); render(); }));
+    $$("[data-preset]", root).forEach((el) => el.addEventListener("click", () => {
+      const p = state.schema.presets.find((x) => x.id === el.getAttribute("data-preset"));
+      if (!p) return;
+      state.enabled = new Set(p.enabled);
+      Object.assign(state.values, p.values);
+      toast("Applied: " + p.name);
+      render();
+    }));
+    $$("[data-group]", root).forEach((el) => el.addEventListener("click", () => { state.activeGroup = el.getAttribute("data-group"); render(); }));
+    $$("[data-toggle-group]", root).forEach((el) => el.addEventListener("click", () => {
+      const id = el.getAttribute("data-toggle-group");
+      if (state.collapsed.has(id)) state.collapsed.delete(id); else state.collapsed.add(id);
+      render();
+    }));
+    $$("[data-action]", root).forEach((el) => el.addEventListener("click", async () => {
+      const a = el.getAttribute("data-action");
+      if (a === "enable-all") { state.enabled = new Set(state.schema.fields.map((f) => f.id)); toast("All included"); render(); }
+      else if (a === "clear") { state.enabled = new Set(); toast("Cleared"); render(); }
+      else if (a === "reset") { state.enabled = new Set(state.schema.presets[0].enabled); state.values = defaults(); toast("Reset"); render(); }
+      else if (a === "tab-preview") { state.tab = "preview"; render(); }
+      else if (a === "download-toml") {
+        const g = await gen();
+        const name = state.schema.format === "json" ? "opencode.json" : "config.toml";
+        const mime = state.schema.format === "json" ? "application/json" : "application/toml";
+        dl(name, g.toml || g.config, mime);
+      } else if (a === "download-md") {
+        const g = await gen();
+        dl(state.product + "-config-reference.md", g.markdown, "text/markdown");
+      }
+    }));
+    $$(".field", root).forEach((fieldEl) => {
+      const id = fieldEl.getAttribute("data-id");
+      const switches = $$(".switch input", fieldEl);
+      if (!switches[0]) return;
+      switches[0].addEventListener("change", () => {
+        if (switches[0].checked) state.enabled.add(id); else state.enabled.delete(id);
+        render();
+      });
+      if (switches[1]) switches[1].addEventListener("change", () => { state.values[id] = switches[1].checked; render(); });
+    });
+    $$("input[data-field], select[data-field]", root).forEach((el) => {
+      const apply = () => {
+        const id = el.getAttribute("data-field");
+        if (el.getAttribute("data-list") === "1") state.values[id] = el.value.split(",").map((x) => x.trim()).filter(Boolean);
+        else if (el.type === "number") state.values[id] = el.value === "" ? "" : Number(el.value);
+        else state.values[id] = el.value;
+      };
+      el.addEventListener("change", apply);
+      el.addEventListener("input", apply);
+    });
+    const search = $("#search", root);
+    if (search) search.addEventListener("keydown", (e) => { if (e.key === "Enter") { state.query = search.value; render(); } });
+    $$(".preview-panel", root).forEach((panel, i) => {
+      const keys = ["toml", "env", "cli", "markdown"];
+      const isJson = state.schema && state.schema.format === "json";
+      const files = [
+        [isJson ? "opencode.json" : "config.toml", isJson ? "application/json" : "application/toml"],
+        ["env.sh", "text/plain"],
+        ["launch.sh", "text/plain"],
+        [state.product + "-config-reference.md", "text/markdown"],
+      ];
+      let content = (window.__gen && window.__gen[keys[i]]) || "";
+      if (i === 0 && !content && window.__gen) content = window.__gen.config || "";
+      const btns = $$("button", panel);
+      if (btns[0]) btns[0].addEventListener("click", async () => { try { await navigator.clipboard.writeText(content); toast("Copied"); } catch { toast("Copy failed"); } });
+      if (btns[1]) btns[1].addEventListener("click", () => dl(files[i][0], content, files[i][1]));
+    });
+  }
+  (async () => {
+    state.schema = window.__STATIC_SCHEMA__;
+    if (state.schema.cli_flags) state.schema.cliFlags = state.schema.cli_flags;
+    if (state.schema.env_vars) state.schema.envVars = state.schema.env_vars;
+    if (state.schema.cliFlags === undefined && state.schema.cli_flags) state.schema.cliFlags = state.schema.cli_flags;
+    // serde may already camelCase
+    state.enabled = new Set(state.schema.presets[0].enabled);
+    state.values = defaults();
+    await render();
+  })().catch((e) => {
+    document.getElementById("app").textContent = String(e);
+  });
+})();
+
+</script>
+</body>
+</html>
