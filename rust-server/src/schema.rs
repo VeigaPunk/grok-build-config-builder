@@ -112,9 +112,9 @@ pub fn groups() -> &'static [FieldGroup] {
 pub fn fields() -> Vec<ConfigField> {
     vec![
         // Models
-        ConfigField { id: "models.default", path: "models.default", section: "models", group: "models", label: "Default model", description: "Model used for new sessions. Recommended: grok-build.", field_type: "string", default: Some(jstr("grok-build")), options: None, env: Some("GROK_DEFAULT_MODEL"), cli: Some("-m, --model"), recommended: Some(true) },
+        ConfigField { id: "models.default", path: "models.default", section: "models", group: "models", label: "Default model", description: "Model used for new sessions. Titanium default: grok-4.5.", field_type: "string", default: Some(jstr("grok-4.5")), options: None, env: Some("GROK_DEFAULT_MODEL"), cli: Some("-m, --model"), recommended: Some(true) },
         ConfigField { id: "models.web_search", path: "models.web_search", section: "models", group: "models", label: "Web search model", description: "Model used by the client-side web_search tool.", field_type: "string", default: Some(jstr("grok-4.5")), options: None, env: Some("GROK_WEB_SEARCH_MODEL"), cli: None, recommended: None },
-        ConfigField { id: "models.default_reasoning_effort", path: "models.default_reasoning_effort", section: "models", group: "models", label: "Default reasoning effort", description: "Default reasoning effort for the default model (if supported).", field_type: "enum", default: Some(jstr("medium")), options: Some(&["low", "medium", "high"]), env: None, cli: Some("--effort"), recommended: None },
+        ConfigField { id: "models.default_reasoning_effort", path: "models.default_reasoning_effort", section: "models", group: "models", label: "Default reasoning effort", description: "Default reasoning effort for the default model (if supported).", field_type: "enum", default: Some(jstr("low")), options: Some(&["low", "medium", "high"]), env: None, cli: Some("--effort"), recommended: None },
         ConfigField { id: "models.session_summary", path: "models.session_summary", section: "models", group: "models", label: "Session summary model", description: "Model used for session titles/summaries.", field_type: "string", default: None, options: None, env: None, cli: None, recommended: None },
         ConfigField { id: "models.image_description", path: "models.image_description", section: "models", group: "models", label: "Image description model", description: "Model used for image description.", field_type: "string", default: None, options: None, env: None, cli: None, recommended: None },
         ConfigField { id: "models.temperature", path: "models.temperature", section: "models", group: "models", label: "Temperature", description: "Global sampling temperature default.", field_type: "number", default: Some(jnum(0.7)), options: None, env: None, cli: None, recommended: None },
@@ -151,7 +151,7 @@ pub fn fields() -> Vec<ConfigField> {
         ConfigField { id: "sandbox.auto_allow_bash", path: "sandbox.auto_allow_bash", section: "sandbox", group: "sandbox", label: "Auto-allow bash in sandbox", description: "Skip bash permission prompts when a sandbox profile is active.", field_type: "boolean", default: Some(jbool(false)), options: None, env: Some("GROK_SANDBOX_AUTO_ALLOW_BASH"), cli: None, recommended: None },
 
         // Permissions
-        ConfigField { id: "permissions.permission_mode", path: "permissions.permission_mode", section: "permissions", group: "permissions", label: "Permission mode", description: "auto | ask | always-approve. Legacy: approval_mode, yolo=true.", field_type: "enum", default: Some(jstr("auto")), options: Some(&["auto", "ask", "always-approve"]), env: None, cli: Some("--always-approve / --yolo"), recommended: None },
+        ConfigField { id: "permissions.permission_mode", path: "permissions.permission_mode", section: "permissions", group: "permissions", label: "Permission mode", description: "auto | ask | always-approve. Titanium default: always-approve.", field_type: "enum", default: Some(jstr("always-approve")), options: Some(&["auto", "ask", "always-approve"]), env: None, cli: Some("--always-approve / --yolo"), recommended: None },
         ConfigField { id: "permissions.remember_tool_approvals", path: "permissions.remember_tool_approvals", section: "permissions", group: "permissions", label: "Remember tool approvals", description: "Show per-tool Always allow options.", field_type: "boolean", default: Some(jbool(false)), options: None, env: Some("GROK_REMEMBER_TOOL_APPROVALS"), cli: None, recommended: None },
         ConfigField { id: "permissions.default_selected_permission", path: "permissions.default_selected_permission", section: "permissions", group: "permissions", label: "Default selected permission", description: "Preselected row on the first permission prompt.", field_type: "enum", default: Some(jstr("always_allow_all_sessions")), options: Some(&["always_allow_all_sessions", "allow_once", "deny", "always_allow_tool", "allow_command_always", "reject"]), env: Some("GROK_DEFAULT_SELECTED_PERMISSION"), cli: None, recommended: None },
 
@@ -383,6 +383,25 @@ pub fn subcommands() -> &'static [Subcommand] {
 pub fn presets() -> Vec<Preset> {
     vec![
         Preset {
+            id: "titanium-xbgst",
+            name: "Titanium · xbgst + livepatch ban",
+            description: "VeigaPunk host defaults: grok-4.5, always-approve, xbgst-stack plugins, ban GP/explore toggles. Pairs with grok-build-livepatch.",
+            enabled: &[
+                "models.default",
+                "models.default_reasoning_effort",
+                "permissions.permission_mode",
+                "features.subagents",
+                "plugins.enabled",
+            ],
+            values: serde_json::json!({
+                "models.default": "grok-4.5",
+                "models.default_reasoning_effort": "low",
+                "permissions.permission_mode": "always-approve",
+                "features.subagents": true,
+                "plugins.enabled": ["exa", "tinyfish", "cloudflare", "xbgst-stack", "heuer-planning"]
+            }),
+        },
+        Preset {
             id: "privacy-first",
             name: "Privacy first",
             description: "Disable codebase upload & telemetry; sandbox workspace.",
@@ -469,6 +488,6 @@ pub fn payload() -> SchemaPayload {
         env_vars: env_vars(),
         subcommands: subcommands(),
         presets: presets(),
-        version_note: "Grok Build CLI · documented track v0.2.117 · Grok 4.5 · exhaustive knobs · pure Rust builder",
+        version_note: "Grok Build CLI · Titanium xbgst preset · grok-4.5 · livepatch-aligned · pure Rust builder",
     }
 }

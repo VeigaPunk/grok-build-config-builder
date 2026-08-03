@@ -207,8 +207,8 @@
   "fields": [
     {
       "cli": "-m, --model",
-      "default": "grok-build",
-      "description": "Model used for new sessions. Recommended: grok-build.",
+      "default": "grok-4.5",
+      "description": "Model used for new sessions. Titanium default: grok-4.5.",
       "env": "GROK_DEFAULT_MODEL",
       "group": "models",
       "id": "models.default",
@@ -231,7 +231,7 @@
     },
     {
       "cli": "--effort",
-      "default": "medium",
+      "default": "low",
       "description": "Default reasoning effort for the default model (if supported).",
       "group": "models",
       "id": "models.default_reasoning_effort",
@@ -243,7 +243,8 @@
       ],
       "path": "models.default_reasoning_effort",
       "section": "models",
-      "type": "enum"
+      "type": "enum",
+      "recommended": true
     },
     {
       "description": "Model used for session titles/summaries.",
@@ -507,7 +508,7 @@
     },
     {
       "cli": "--always-approve / --yolo",
-      "default": "auto",
+      "default": "always-approve",
       "description": "auto | ask | always-approve. Legacy: approval_mode, yolo=true.",
       "group": "permissions",
       "id": "permissions.permission_mode",
@@ -519,7 +520,8 @@
       ],
       "path": "permissions.permission_mode",
       "section": "permissions",
-      "type": "enum"
+      "type": "enum",
+      "recommended": true
     },
     {
       "default": false,
@@ -952,13 +954,21 @@
       "type": "string-list"
     },
     {
-      "description": "Explicitly enable plugins by name.",
+      "description": "Explicitly enable plugins by name. Titanium: xbgst-stack + DS4CC-adjacent tools.",
       "group": "plugins",
       "id": "plugins.enabled",
       "label": "Enabled plugins",
       "path": "plugins.enabled",
       "section": "plugins",
-      "type": "string-list"
+      "type": "string-list",
+      "default": [
+        "exa",
+        "tinyfish",
+        "cloudflare",
+        "xbgst-stack",
+        "heuer-planning"
+      ],
+      "recommended": true
     },
     {
       "description": "Discover but do not activate.",
@@ -968,6 +978,105 @@
       "path": "plugins.disabled",
       "section": "plugins",
       "type": "string-list"
+    },
+    {
+      "default": "internal",
+      "description": "CLI installer channel (internal vs external).",
+      "group": "cli",
+      "id": "cli.installer",
+      "label": "Installer",
+      "path": "cli.installer",
+      "section": "cli",
+      "type": "string",
+      "recommended": true
+    },
+    {
+      "default": true,
+      "description": "Auto-install official marketplace on first run.",
+      "group": "plugins",
+      "id": "marketplace.official_auto",
+      "label": "Official marketplace auto-install",
+      "path": "marketplace.official_marketplace_auto_installed",
+      "section": "marketplace",
+      "type": "boolean",
+      "recommended": true
+    },
+    {
+      "default": true,
+      "description": "Purge default skill installs once (clean slate for curated stack).",
+      "group": "plugins",
+      "id": "marketplace.purge_default_skills",
+      "label": "Purge default skills installs",
+      "path": "marketplace.default_skills_installs_purged",
+      "section": "marketplace",
+      "type": "boolean",
+      "recommended": true
+    },
+    {
+      "default": "https://github.com/xai-org/plugin-marketplace.git",
+      "description": "xAI Official marketplace git URL (name: xAI Official).",
+      "group": "plugins",
+      "id": "marketplace.source.xai",
+      "label": "Marketplace: xAI Official",
+      "path": "marketplace.sources.xai.git",
+      "section": null,
+      "type": "string",
+      "recommended": true
+    },
+    {
+      "default": "https://github.com/VeigaPunk/grok-marketplace.git",
+      "description": "VeigaPunk grok-marketplace (xbgst-stack + livepatch). name: grok-marketplace.",
+      "group": "plugins",
+      "id": "marketplace.source.grok_marketplace",
+      "label": "Marketplace: grok-marketplace",
+      "path": "marketplace.sources.grok_marketplace.git",
+      "section": null,
+      "type": "string",
+      "recommended": true
+    },
+    {
+      "default": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+      "description": "DS4CC / Titanium marketplace git URL. name: ds4cc-marketplace.",
+      "group": "plugins",
+      "id": "marketplace.source.ds4cc",
+      "label": "Marketplace: ds4cc-marketplace",
+      "path": "marketplace.sources.ds4cc.git",
+      "section": null,
+      "type": "string",
+      "recommended": true
+    },
+    {
+      "default": false,
+      "description": "Defense in depth: disable explore toggle (livepatch also hard-bans spawn).",
+      "group": "features",
+      "id": "subagents.toggle.explore",
+      "label": "Subagent toggle: explore",
+      "path": "subagents.toggle.explore",
+      "section": "subagents.toggle",
+      "type": "boolean",
+      "recommended": true
+    },
+    {
+      "default": false,
+      "description": "Defense in depth: disable general-purpose toggle (livepatch hard-bans spawn; use agent alias).",
+      "group": "features",
+      "id": "subagents.toggle.general_purpose",
+      "label": "Subagent toggle: general-purpose",
+      "path": "subagents.toggle.general-purpose",
+      "section": "subagents.toggle",
+      "type": "boolean",
+      "recommended": true
+    },
+    {
+      "default": "grok-4.5",
+      "description": "Secondary model for /fork.",
+      "group": "ui",
+      "id": "ui.fork_secondary_model",
+      "label": "Fork secondary model",
+      "path": "ui.fork_secondary_model",
+      "section": "ui",
+      "type": "string",
+      "recommended": true
     }
   ],
   "format": "toml",
@@ -1034,6 +1143,53 @@
     }
   ],
   "presets": [
+    {
+      "id": "titanium-xbgst",
+      "name": "Titanium \u00b7 xbgst + livepatch ban",
+      "description": "VeigaPunk host defaults: grok-4.5, always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
+      "enabled": [
+        "models.default",
+        "models.default_reasoning_effort",
+        "permissions.permission_mode",
+        "ui.compact_mode",
+        "ui.max_thoughts_width",
+        "ui.fork_secondary_model",
+        "features.subagents",
+        "plugins.enabled",
+        "cli.installer",
+        "marketplace.official_auto",
+        "marketplace.purge_default_skills",
+        "subagents.toggle.explore",
+        "subagents.toggle.general_purpose",
+        "marketplace.source.xai",
+        "marketplace.source.grok_marketplace",
+        "marketplace.source.ds4cc"
+      ],
+      "values": {
+        "models.default": "grok-4.5",
+        "models.default_reasoning_effort": "low",
+        "permissions.permission_mode": "always-approve",
+        "ui.compact_mode": false,
+        "ui.max_thoughts_width": 120,
+        "ui.fork_secondary_model": "grok-4.5",
+        "features.subagents": true,
+        "plugins.enabled": [
+          "exa",
+          "tinyfish",
+          "cloudflare",
+          "xbgst-stack",
+          "heuer-planning"
+        ],
+        "cli.installer": "internal",
+        "marketplace.official_auto": true,
+        "marketplace.purge_default_skills": true,
+        "subagents.toggle.explore": false,
+        "subagents.toggle.general_purpose": false,
+        "marketplace.source.xai": "https://github.com/xai-org/plugin-marketplace.git",
+        "marketplace.source.grok_marketplace": "https://github.com/VeigaPunk/grok-marketplace.git",
+        "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git"
+      }
+    },
     {
       "description": "Disable codebase upload & telemetry; sandbox workspace.",
       "enabled": [
@@ -1114,7 +1270,7 @@
     }
   ],
   "product": "grok",
-  "productTagline": "Grok Build CLI config reference and patch builder.",
+  "productTagline": "Grok Build CLI \u00b7 Titanium xbgst defaults \u00b7 livepatch ban (general-purpose/explore) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
   "productTitle": "Grok Build",
   "subcommands": [
     {
@@ -1154,5 +1310,5 @@
       "desc": "Fetch and install managed configuration"
     }
   ],
-  "versionNote": "Grok Build CLI \u00b7 documented track v0.2.117 \u00b7 Grok 4.5 \u00b7 pure Rust builder"
+  "versionNote": "Grok Build CLI \u00b7 Titanium xbgst preset \u00b7 grok-4.5 \u00b7 livepatch-aligned \u00b7 pure Rust builder"
 }

@@ -3,7 +3,9 @@
 Interactive config builders for **Grok Build**, **Codex**, and **OpenCode**.  
 **Stack: pure Rust** (Axum). Browser QA via **agent-browser** (not Playwright).
 
-Titanium profiles are the sensible defaults.
+Titanium profiles are the sensible defaults. **Grok** default preset is `Titanium · xbgst + livepatch ban` (always-approve, grok-4.5, xbgst-stack, GP/explore toggles off).
+
+Recommended static config: `pages-multi/static/recommended-grok-config.toml` (also on Pages as `/static/recommended-grok-config.toml`).
 
 Schemas are exhaustive against each CLI's official docs: config keys, flags, env vars, and subcommands for Grok Build, Codex, and OpenCode.
 

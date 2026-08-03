@@ -17,6 +17,8 @@
     collapsed: new Set(),
     product: PRODUCT,
   };
+  const linkify = (html) =>
+    html.replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">${u}</a>`);
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = (s) => {
@@ -89,7 +91,14 @@
         const list = Array.isArray(v) ? v : String(v).split(",").map(s=>s.trim()).filter(Boolean);
         if (!list.length) continue;
         formatted = "[" + list.map(s => JSON.stringify(s)).join(", ") + "]";
-      } else formatted = JSON.stringify(String(v));
+      } else {
+        const s = String(v);
+        if (s.includes("\n")) {
+          formatted = '"""\n' + s.replaceAll("\\", "\\\\").replaceAll('"""', '\\"""') + '\n"""';
+        } else {
+          formatted = JSON.stringify(s);
+        }
+      }
       if (f.section) (sections[f.section] ||= []).push(f.path.split(".").pop() + " = " + formatted);
       else if (f.id.startsWith("provider.") && f.id !== "provider.id") {
         const pid = values["provider.id"] || "custom";
@@ -98,9 +107,29 @@
     }
     let out = "# Generated Titanium config\n\n" + lines.join("\n") + "\n\n";
     for (const [sec, ls] of Object.entries(sections)) out += "[" + sec + "]\n" + ls.join("\n") + "\n\n";
+    if ((schema.product || "") === "grok") {
+      // Titanium host marketplaces as [[marketplace.sources]] tables
+      const mkt = [];
+      if (en.has("marketplace.source.xai") && values["marketplace.source.xai"]) {
+        mkt.push({ name: "xAI Official", git: String(values["marketplace.source.xai"]) });
+      }
+      if (en.has("marketplace.source.grok_marketplace") && values["marketplace.source.grok_marketplace"]) {
+        mkt.push({ name: "grok-marketplace", git: String(values["marketplace.source.grok_marketplace"]) });
+      }
+      if (en.has("marketplace.source.ds4cc") && values["marketplace.source.ds4cc"]) {
+        mkt.push({ name: "ds4cc-marketplace", git: String(values["marketplace.source.ds4cc"]) });
+      }
+      for (const m of mkt) {
+        out += "[[marketplace.sources]]\nname = " + JSON.stringify(m.name) + "\ngit = " + JSON.stringify(m.git) + "\n\n";
+      }
+      // strip broken dotted marketplace.sources.* keys if emitted
+      out = out.replace(/^marketplace\.sources\.[^\n]+\n/gm, "");
+    }
     if ((schema.product || "") === "codex") {
       out += "[profiles.titanium]\n";
       if (en.has("model") && values.model) out += "model = " + JSON.stringify(String(values.model)) + "\n";
+      if (en.has("approval_policy") && values.approval_policy) out += "approval_policy = " + JSON.stringify(String(values.approval_policy)) + "\n";
+      if (en.has("sandbox_mode") && values.sandbox_mode) out += "sandbox_mode = " + JSON.stringify(String(values.sandbox_mode)) + "\n";
     }
     return { config: out, toml: out, env: "# env\n", cli: schema.product === "codex" ? "codex --profile titanium\n" : "opencode\n", markdown: "# Ref\n" };
   }
@@ -172,7 +201,7 @@
     const note = state.schema.versionNote || state.schema.version_note || "pure Rust";
     const tab = (id, lab) => `<button type="button" class="btn pill ${state.tab === id ? "active" : ""}" data-tab="${id}">${lab}</button>`;
     let body = state.tab === "builder" ? builder() : state.tab === "preview" ? await preview() : reference();
-    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${esc(tag)} · JetBrainsMonoNL Nerd Font Mono</p></div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
+    root.innerHTML = `<header class="app"><div class="wrap"><div class="header-top"><div style="min-width:0"><div class="eyebrow"><a href="${BASE || "/"}" style="color:inherit;text-decoration:none">← hub</a> · ${esc(title)} · Rust</div><h1>${esc(title)}</h1><p class="lede">${linkify(esc(tag))}</p>${state.product === "codex" ? `<p class="lede" style="margin-top:6px"><strong>Optimal with <a href="https://github.com/VeigaPunk/xbrd-spark" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Sekhmet</a></strong> (<code>sekhmet</code> / <code>xbrd-spark</code> · up to 64 concurrent · pairs with <a href="https://github.com/VeigaPunk/codex-titanium" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">codex-titanium</a>)</p>` : state.product === "grok" ? `<p class="lede" style="margin-top:6px"><strong>Titanium preset</strong> ships xbgst-stack marketplaces + always-approve · hard-ban <code>general-purpose</code>/<code>explore</code> via <a href="https://github.com/VeigaPunk/grok-build-livepatch" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">grok-build-livepatch</a> · full-tool alias <code>agent</code> · <a href="../static/recommended-grok-config.toml" style="color:inherit;text-decoration:underline">download recommended config.toml</a></p>` : `<p class="lede" style="opacity:.7;margin-top:4px">JetBrainsMonoNL Nerd Font Mono · ${esc(note)}</p>`}</div><div class="row"><button type="button" class="btn secondary sm" data-action="download-md">Download .md</button><button type="button" class="btn sm" data-action="download-toml">Download patch</button></div></div><div class="tabs">${tab("builder", "Builder")}${tab("preview", "Preview")}${tab("reference", "Reference")}<span class="badge hide-sm ml-auto">${n} in patch</span></div></div></header><main class="wrap">${body}</main><footer class="app">${esc(note)} · JetBrainsMonoNL Nerd Font Mono</footer>`;
     bind(root);
   }
   function bind(root) {
@@ -247,10 +276,14 @@
   }
   (async () => {
     let schema = null;
-    try {
-      const ar = await fetch("/api/" + state.product + "/schema");
-      if (ar.ok) schema = await ar.json();
-    } catch (_) {}
+    // Prefer static schema (GH Pages). Only try API when not on github.io static host.
+    const onPages = /github\.io$/i.test(location.hostname) || location.protocol === "file:";
+    if (!onPages) {
+      try {
+        const ar = await fetch("/api/" + state.product + "/schema");
+        if (ar.ok) schema = await ar.json();
+      } catch (_) {}
+    }
     if (!schema) {
       const r = await fetch(SCHEMA_URL);
       if (!r.ok) throw new Error("schema " + r.status + " " + SCHEMA_URL);
