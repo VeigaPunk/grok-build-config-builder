@@ -296,6 +296,7 @@ tool_timeout_sec = 6000
 | `GROK_WEB_FETCH_PROXY` | Tools | Egress proxy for web_fetch |
 | `GROK_MEMORY` | Features | 1/0 cross-session memory |
 | `GROK_SUBAGENTS` | Features | 1/0 subagents |
+| `GROK_SUBAGENTS_MAX_DEPTH` | Features | Max nesting depth (default 1 = flat tree); TOML: `[subagents] max_depth` |
 | `GROK_AGENT` | Features | Agent name or path |
 | `GROK_WRITE_FILE` | Tools | 0 disables write tool |
 | `GROK_TOOL_SEARCH` | Tools | 1/0 MCP tool discovery |

@@ -184,6 +184,11 @@
       "name": "GROK_SUBAGENTS"
     },
     {
+      "category": "Features",
+      "description": "Max subagent nesting depth (default 1 = flat tree)",
+      "name": "GROK_SUBAGENTS_MAX_DEPTH"
+    },
+    {
       "category": "Tools",
       "description": "1/0 enable web_fetch",
       "name": "GROK_WEB_FETCH"
@@ -1068,6 +1073,18 @@
       "recommended": true
     },
     {
+      "id": "subagents.max_depth",
+      "label": "Subagent max nesting depth",
+      "path": "subagents.max_depth",
+      "section": "subagents",
+      "group": "features",
+      "type": "number",
+      "default": 1,
+      "recommended": true,
+      "env": "GROK_SUBAGENTS_MAX_DEPTH",
+      "description": "Max subagent nesting depth (default 1 = flat tree: main may spawn children; children cannot spawn Task). Raise to 2+ only for nested sub-leads. xbgst hardcap 16 is concurrent siblings, not depth. No host max-concurrent knob."
+    },
+    {
       "default": "grok-4.5",
       "description": "Secondary model for /fork.",
       "group": "ui",
@@ -1146,7 +1163,7 @@
     {
       "id": "titanium-xbgst",
       "name": "Titanium \u00b7 xbgst + livepatch ban",
-      "description": "VeigaPunk host defaults: grok-4.5, always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
+      "description": "VeigaPunk host defaults: grok-4.5, always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
       "enabled": [
         "models.default",
         "models.default_reasoning_effort",
@@ -1155,6 +1172,7 @@
         "ui.max_thoughts_width",
         "ui.fork_secondary_model",
         "features.subagents",
+        "subagents.max_depth",
         "plugins.enabled",
         "cli.installer",
         "marketplace.official_auto",
@@ -1187,7 +1205,8 @@
         "subagents.toggle.general_purpose": false,
         "marketplace.source.xai": "https://github.com/xai-org/plugin-marketplace.git",
         "marketplace.source.grok_marketplace": "https://github.com/VeigaPunk/grok-marketplace.git",
-        "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git"
+        "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+        "subagents.max_depth": 1
       }
     },
     {
