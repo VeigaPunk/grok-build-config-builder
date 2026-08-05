@@ -1,10 +1,10 @@
 {
   "product": "codex",
   "productTitle": "Codex Titanium",
-  "productTagline": "Titanium unrestricted \u00b7 Godspeed \u00b7 multi_agent_v2@64 \u00b7 DS4CC plugins \u2014 optimal with Sekhmet",
+  "productTagline": "Titanium unrestricted · Godspeed · multi_agent_v2@64 · DS4CC plugins — optimal with Sekhmet",
   "configPath": "~/.codex/config.toml",
   "format": "toml",
-  "versionNote": "Matches codex-titanium/titanium/config.toml \u00b7 Optimal with Sekhmet https://github.com/VeigaPunk/xbrd-spark",
+  "versionNote": "Matches codex-titanium/titanium/config.toml · Optimal with Sekhmet https://github.com/VeigaPunk/xbrd-spark",
   "cliFlags": [
     {
       "category": "Session",
@@ -192,7 +192,7 @@
       "label": "Base instructions (system prompt)",
       "description": "Godspeed behavioral directive. Matches titanium/config.toml + Godspeed-enabled subagent rules. Optimal with Sekhmet.",
       "type": "string",
-      "default": "# Godspeed Mode \u2014 Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim \u2014 let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+      "default": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
       "recommended": true
     },
     {
@@ -544,17 +544,6 @@
       "description": "Enable myskills@ds4cc from DS4CC marketplace (titanium reference)."
     },
     {
-      "id": "plugins.agent-wall@ds4cc.enabled",
-      "path": "plugins.agent-wall@ds4cc.enabled",
-      "section": "plugins.\"agent-wall@ds4cc\"",
-      "group": "plugins",
-      "label": "Plugin agent-wall@ds4cc",
-      "type": "boolean",
-      "default": true,
-      "recommended": true,
-      "description": "Enable agent-wall@ds4cc from DS4CC marketplace (titanium reference)."
-    },
-    {
       "id": "plugins.the-puppeteer@ds4cc.enabled",
       "path": "plugins.the-puppeteer@ds4cc.enabled",
       "section": "plugins.\"the-puppeteer@ds4cc\"",
@@ -597,12 +586,78 @@
       "default": true,
       "recommended": true,
       "description": "Enable ds4cc@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.sekhmet@ds4cc.enabled",
+      "path": "plugins.sekhmet@ds4cc.enabled",
+      "section": "plugins.\"sekhmet@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin sekhmet@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable sekhmet@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.xbrd-selector@ds4cc.enabled",
+      "path": "plugins.xbrd-selector@ds4cc.enabled",
+      "section": "plugins.\"xbrd-selector@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin xbrd-selector@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable xbrd-selector@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.the-kimiraikoner@ds4cc.enabled",
+      "path": "plugins.the-kimiraikoner@ds4cc.enabled",
+      "section": "plugins.\"the-kimiraikoner@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-kimiraikoner@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-kimiraikoner@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.heuer-planning@ds4cc.enabled",
+      "path": "plugins.heuer-planning@ds4cc.enabled",
+      "section": "plugins.\"heuer-planning@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin heuer-planning@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable heuer-planning@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.spoderman@ds4cc.enabled",
+      "path": "plugins.spoderman@ds4cc.enabled",
+      "section": "plugins.\"spoderman@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin spoderman@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable spoderman@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.the-netsshark@ds4cc.enabled",
+      "path": "plugins.the-netsshark@ds4cc.enabled",
+      "section": "plugins.\"the-netsshark@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-netsshark@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-netsshark@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
     }
   ],
   "presets": [
     {
       "id": "titanium",
-      "name": "Titanium (unrestricted \u00b7 optimal with Sekhmet)",
+      "name": "Titanium (unrestricted · optimal with Sekhmet)",
       "description": "1:1 with codex-titanium/titanium/config.toml + DS4CC plugins. Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark): never/danger-full-access, multi_agent_v2@64, Godspeed directive, full plugin stack. sekhmet swarm -j N (cap 64).",
       "enabled": [
         "model",
@@ -643,16 +698,21 @@
         "plugins.myagents@ds4cc.enabled",
         "plugins.mycommands@ds4cc.enabled",
         "plugins.myskills@ds4cc.enabled",
-        "plugins.agent-wall@ds4cc.enabled",
         "plugins.the-puppeteer@ds4cc.enabled",
         "plugins.the-musketeer@ds4cc.enabled",
         "plugins.the-almanacker@ds4cc.enabled",
-        "plugins.ds4cc@ds4cc.enabled"
+        "plugins.ds4cc@ds4cc.enabled",
+        "plugins.sekhmet@ds4cc.enabled",
+        "plugins.xbrd-selector@ds4cc.enabled",
+        "plugins.the-kimiraikoner@ds4cc.enabled",
+        "plugins.heuer-planning@ds4cc.enabled",
+        "plugins.spoderman@ds4cc.enabled",
+        "plugins.the-netsshark@ds4cc.enabled"
       ],
       "values": {
         "approval_policy": "never",
         "sandbox_mode": "danger-full-access",
-        "base_instructions": "# Godspeed Mode \u2014 Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim \u2014 let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+        "base_instructions": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
         "include_collaboration_mode_instructions": false,
         "features.multi_agent": true,
         "features.multi_agent_v2.enabled": true,
@@ -690,11 +750,16 @@
         "plugins.myagents@ds4cc.enabled": true,
         "plugins.mycommands@ds4cc.enabled": true,
         "plugins.myskills@ds4cc.enabled": true,
-        "plugins.agent-wall@ds4cc.enabled": true,
         "plugins.the-puppeteer@ds4cc.enabled": true,
         "plugins.the-musketeer@ds4cc.enabled": true,
         "plugins.the-almanacker@ds4cc.enabled": true,
-        "plugins.ds4cc@ds4cc.enabled": true
+        "plugins.ds4cc@ds4cc.enabled": true,
+        "plugins.sekhmet@ds4cc.enabled": true,
+        "plugins.xbrd-selector@ds4cc.enabled": true,
+        "plugins.the-kimiraikoner@ds4cc.enabled": true,
+        "plugins.heuer-planning@ds4cc.enabled": true,
+        "plugins.spoderman@ds4cc.enabled": true,
+        "plugins.the-netsshark@ds4cc.enabled": true
       }
     },
     {
@@ -740,16 +805,21 @@
         "plugins.myagents@ds4cc.enabled",
         "plugins.mycommands@ds4cc.enabled",
         "plugins.myskills@ds4cc.enabled",
-        "plugins.agent-wall@ds4cc.enabled",
         "plugins.the-puppeteer@ds4cc.enabled",
         "plugins.the-musketeer@ds4cc.enabled",
         "plugins.the-almanacker@ds4cc.enabled",
-        "plugins.ds4cc@ds4cc.enabled"
+        "plugins.ds4cc@ds4cc.enabled",
+        "plugins.sekhmet@ds4cc.enabled",
+        "plugins.xbrd-selector@ds4cc.enabled",
+        "plugins.the-kimiraikoner@ds4cc.enabled",
+        "plugins.heuer-planning@ds4cc.enabled",
+        "plugins.spoderman@ds4cc.enabled",
+        "plugins.the-netsshark@ds4cc.enabled"
       ],
       "values": {
         "approval_policy": "never",
         "sandbox_mode": "danger-full-access",
-        "base_instructions": "# Godspeed Mode \u2014 Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim \u2014 let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+        "base_instructions": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
         "features.multi_agent_v2.enabled": true,
         "features.multi_agent_v2.max_concurrent_threads_per_session": 64,
         "features.memories": false,
@@ -785,11 +855,16 @@
         "plugins.myagents@ds4cc.enabled": true,
         "plugins.mycommands@ds4cc.enabled": true,
         "plugins.myskills@ds4cc.enabled": true,
-        "plugins.agent-wall@ds4cc.enabled": true,
         "plugins.the-puppeteer@ds4cc.enabled": true,
         "plugins.the-musketeer@ds4cc.enabled": true,
         "plugins.the-almanacker@ds4cc.enabled": true,
-        "plugins.ds4cc@ds4cc.enabled": true
+        "plugins.ds4cc@ds4cc.enabled": true,
+        "plugins.sekhmet@ds4cc.enabled": true,
+        "plugins.xbrd-selector@ds4cc.enabled": true,
+        "plugins.the-kimiraikoner@ds4cc.enabled": true,
+        "plugins.heuer-planning@ds4cc.enabled": true,
+        "plugins.spoderman@ds4cc.enabled": true,
+        "plugins.the-netsshark@ds4cc.enabled": true
       }
     }
   ],
