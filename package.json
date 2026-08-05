@@ -89,5 +89,15 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.1.0"
   },
-  "description": "Interactive Titanium config builders for Grok Build, Codex, and OpenCode"
+  "description": "Agent Config Builders Titanium v2 \u2014 Grok (xbgst), Codex, OpenCode interactive patch builders",
+  "version": "2.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VeigaPunk/grok-build-config-builder.git"
+  },
+  "homepage": "https://veigapunk.github.io/grok-build-config-builder/",
+  "bugs": {
+    "url": "https://github.com/VeigaPunk/grok-build-config-builder/issues"
+  },
+  "license": "MIT"
 }
