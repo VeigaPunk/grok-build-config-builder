@@ -1,25 +1,26 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
-  {
-    variants: {
-      variant: {
-        default: "border-border bg-bg-subtle text-fg-muted",
-        accent: "border-transparent bg-accent text-accent-fg",
-        success: "border-success/30 bg-success/10 text-success",
-        warn: "border-warn/30 bg-warn/10 text-warn",
-      },
-    },
-    defaultVariants: { variant: "default" },
-  },
-);
-
 export function Badge({
+  children,
+  variant = "default",
   className,
-  variant,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof badgeVariants>) {
-  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+}: {
+  children: React.ReactNode;
+  variant?: "default" | "success" | "subtle";
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        variant === "default" && "border-border bg-bg-subtle text-fg-muted",
+        variant === "success" &&
+          "border-success/30 bg-success-bg text-success",
+        variant === "subtle" && "border-transparent bg-bg-subtle text-fg-subtle",
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
 }

@@ -8,29 +8,20 @@
   },
   "scripts": {
     "dev": "vite dev --host 0.0.0.0 --port 8080",
-    "build": "vite build",
+    "build": "vite build && npm run db:migrate",
+    "db:migrate": "node scripts/migrate.mjs",
+    "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "build:pages": "vite build --config vite.pages.config.ts",
-    "build:all": "npm run build && npm run build:pages",
-    "dev:fnm": "bash scripts/with-fnm.sh npm run dev",
-    "build:fnm": "bash scripts/with-fnm.sh npm run build",
-    "build:pages:fnm": "bash scripts/with-fnm.sh npm run build:pages",
-    "server:rust": "cargo run --manifest-path rust-server/Cargo.toml --release -- --static-dir dist-static --host 0.0.0.0 --port 8080",
-    "server:rust:build": "cargo build --manifest-path rust-server/Cargo.toml --release",
-    "start": "bash scripts/with-fnm.sh npm run build:static && cargo run --manifest-path rust-server/Cargo.toml --release -- --static-dir dist-static --host 0.0.0.0 --port 8080",
-    "build:static": "vite build --config vite.static.config.ts && node -e \"const fs=require('fs');const p='dist-static/index.static.html';if(fs.existsSync(p))fs.renameSync(p,'dist-static/index.html')\"",
-    "build:static:fnm": "bash scripts/with-fnm.sh npm run build:static",
-    "smoke": "node scripts/browser-smoke.mjs",
-    "smoke:hub": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/ /workspace/screenshots/hub.png",
-    "smoke:codex": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/codex/ /workspace/screenshots/codex.png",
-    "smoke:opencode": "node scripts/browser-smoke.mjs http://127.0.0.1:8080/opencode/ /workspace/screenshots/opencode.png"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.3",
     "@hookform/resolvers": "^5.0.0",
+    "better-auth": "^1.4.0",
+    "kysely": "^0.28.5",
+    "pg": "^8.16.3",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -58,14 +49,11 @@
     "@tanstack/react-start": "^1.160.0",
     "@tanstack/react-table": "^8.21.0",
     "@tanstack/router-plugin": "^1.160.0",
-    "better-auth": "^1.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.0.0",
-    "kysely": "^0.28.5",
     "lucide-react": "^0.510.0",
-    "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.1.0",
@@ -82,7 +70,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^22.16.5",
     "@types/pg": "^8.11.10",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
@@ -95,14 +83,11 @@
     "globals": "^15.15.0",
     "lightningcss": "^1.28.0",
     "nitro": "3.0.260603-beta",
+    "playwright": "^1.52.0",
     "prettier": "^3.4.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.1.0"
   },
-  "description": "Interactive Grok Build CLI config reference and patch builder",
-  "version": "1.0.0",
-  "engines": {
-    "node": ">=24 <25"
-  }
+  "description": "Interactive Titanium config builders for Grok Build, Codex, and OpenCode"
 }

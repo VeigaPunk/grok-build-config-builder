@@ -487,3 +487,186 @@ footer.app {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* —— Hub (polished landing) —— */
+.hub {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+.hub-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%);
+}
+.hub-inner {
+  position: relative;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+@media (min-width: 640px) {
+  .hub-inner { padding: 64px 24px 80px; }
+}
+.hub-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hub h1 {
+  margin: 20px 0 0;
+  max-width: 36rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.hub-lede {
+  margin-top: 16px;
+  max-width: 36rem;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.hub-lede strong { color: var(--fg); font-weight: 500; }
+.hub-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 40px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .hub-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 960px) {
+  .hub-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 150ms, background 150ms, transform 150ms;
+  min-height: 100%;
+}
+.hub-card:hover {
+  border-color: var(--border-strong);
+  background: color-mix(in oklab, var(--bg-subtle) 40%, var(--bg-elevated));
+}
+.hub-card:active { transform: scale(0.99); }
+.hub-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.hub-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+}
+.hub-card:hover .hub-icon { color: var(--fg); }
+.hub-arrow {
+  color: var(--fg-subtle);
+  font-size: 14px;
+  transition: color 150ms, transform 150ms;
+}
+.hub-card:hover .hub-arrow {
+  color: var(--fg);
+  transform: translate(2px, -2px);
+}
+.hub-card strong {
+  display: block;
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.hub-card > p {
+  margin: 6px 0 0;
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+.hub-path {
+  display: block;
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--fg-subtle);
+  word-break: break-all;
+}
+.hub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.hub-tags span {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg-subtle);
+}
+.hub-note {
+  margin-top: 40px;
+  padding: 20px 24px;
+}
+.hub-note strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+.hub-note p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+  max-width: 42rem;
+}
+.hub-note a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--border-strong);
+}
+.hub-note code {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-subtle);
+}
+.hub-foot {
+  margin-top: 40px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--fg-subtle);
+}
+.hub-foot a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--border);
+}
+.hub-foot a:hover { color: var(--fg-muted); }
+
+/* Active preset */
+.preset-btn.active {
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 20%, transparent);
+}

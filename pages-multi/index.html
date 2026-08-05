@@ -4,41 +4,79 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Agent Config Builders — Titanium</title>
+<meta name="description" content="Interactive config builders for Grok Build, Codex Titanium, and OpenCode. Toggle settings, apply Titanium · xbgst presets, download patches."/>
+<meta name="theme-color" content="#0a0a0b"/>
 <link rel="stylesheet" href="static/styles.css"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23121214'/%3E%3Cpath d='M9 21.5V10.5h3.2c1.9 0 3.1 1 3.1 2.55 0 1.05-.55 1.9-1.45 2.3 1.15.4 1.85 1.35 1.85 2.65 0 1.75-1.3 2.5-3.35 2.5H9z' fill='%23c8ccd4'/%3E%3C/svg%3E"/>
 </head>
 <body>
-<main class="wrap" style="padding:48px 24px;max-width:56rem">
-  <div class="eyebrow">Rust · multi-product</div>
-  <h1 style="margin-top:8px">Config builders</h1>
-  <p class="lede">Toggle every setting. Download patches. Titanium profiles are the sensible defaults.</p>
-  <div style="display:grid;gap:16px;margin-top:32px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
-    <a class="panel" href="grok/" style="padding:20px;text-decoration:none;color:inherit">
-      <strong style="font-size:16px">Grok Build</strong>
-      <p style="margin:8px 0 0;color:var(--fg-muted);font-size:13px">~/.grok/config.toml · Titanium xbgst + livepatch ban</p>
-    </a>
-    <a class="panel" href="codex/" style="padding:20px;text-decoration:none;color:inherit;border-color:color-mix(in oklab,#c8ccd4 35%,transparent)">
-      <strong style="font-size:16px">Codex Titanium</strong>
-      <p style="margin:8px 0 0;color:var(--fg-muted);font-size:13px">~/.codex/config.toml · Titanium default profile</p>
-      <p style="margin:10px 0 0;font-size:12px;line-height:1.45;color:var(--fg-muted)">
-        <strong style="color:var(--fg)">Optimal with Sekhmet</strong>
-        (<a href="https://github.com/VeigaPunk/xbrd-spark" style="color:inherit">VeigaPunk/xbrd-spark</a>).
-        Titanium unrestricted (multi_agent_v2@64, never/danger-full-access, Godspeed) is the intended runtime for
-        <code>sekhmet</code> / <code>xbrd-spark</code> swarms.
+<main class="hub">
+  <div class="hub-glow" aria-hidden="true"></div>
+  <div class="hub-inner">
+    <div class="hub-badges">
+      <span class="badge">Titanium profiles</span>
+      <span class="badge">multi-product</span>
+      <span class="badge">xbgst</span>
+    </div>
+    <h1>Agent config builders</h1>
+    <p class="lede hub-lede">Toggle every setting. Download patches. Titanium profiles are the sensible defaults — Grok ships <strong>xbgst + livepatch ban</strong>, Codex pairs with Sekhmet, OpenCode gets a wild Titanium build.</p>
+
+    <div class="hub-grid">
+      <a class="hub-card" href="grok/">
+        <div class="hub-card-top">
+          <span class="hub-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></svg>
+          </span>
+          <span class="hub-arrow" aria-hidden="true">↗</span>
+        </div>
+        <strong>Grok Build</strong>
+        <p>Titanium · xbgst + livepatch ban — always-approve, xbgst-stack marketplaces, flat subagents.</p>
+        <code class="hub-path">~/.grok/config.toml</code>
+        <div class="hub-tags"><span>livepatch</span><span>marketplace</span></div>
+      </a>
+
+      <a class="hub-card" href="codex/">
+        <div class="hub-card-top">
+          <span class="hub-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </span>
+          <span class="hub-arrow" aria-hidden="true">↗</span>
+        </div>
+        <strong>Codex Titanium</strong>
+        <p>Unrestricted Titanium profile · multi_agent_v2@64 · optimal with Sekhmet swarms.</p>
+        <code class="hub-path">~/.codex/config.toml</code>
+        <div class="hub-tags"><span>Sekhmet</span><span>codex-titanium</span></div>
+      </a>
+
+      <a class="hub-card" href="opencode/">
+        <div class="hub-card-top">
+          <span class="hub-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          </span>
+          <span class="hub-arrow" aria-hidden="true">↗</span>
+        </div>
+        <strong>OpenCode Titanium</strong>
+        <p>Wild Titanium build — agents, MCP, plan mode, and sharp OpenCode defaults.</p>
+        <code class="hub-path">opencode.json</code>
+      </a>
+    </div>
+
+    <section class="hub-note panel">
+      <strong>Sekhmet · swarm substrate</strong>
+      <p>
+        <a href="https://github.com/VeigaPunk/xbrd-spark" target="_blank" rel="noopener">VeigaPunk/xbrd-spark</a>
+        is the pure L3 swarm substrate that runs against
+        <a href="https://github.com/VeigaPunk/codex-titanium" target="_blank" rel="noopener">Codex Titanium</a>.
+        Use the Titanium preset so concurrent <code>sekhmet swarm -j N</code> (cap 64) matches agent wiring.
       </p>
-    </a>
-    <a class="panel" href="opencode/" style="padding:20px;text-decoration:none;color:inherit;border-color:color-mix(in oklab,#c8ccd4 35%,transparent)">
-      <strong style="font-size:16px">OpenCode Titanium</strong>
-      <p style="margin:8px 0 0;color:var(--fg-muted);font-size:13px">opencode.json · wild Titanium build</p>
-    </a>
+    </section>
+
+    <p class="hub-foot">
+      Default Grok preset: Titanium · xbgst + livepatch ban
+      · <a href="https://github.com/VeigaPunk/grok-build-config-builder">GitHub</a>
+      · <a href="static/recommended-grok-config.toml">recommended-grok-config.toml</a>
+    </p>
   </div>
-  <p style="margin-top:28px;font-size:13px;line-height:1.55;color:var(--fg-muted)">
-    <strong style="color:var(--fg)">Sekhmet</strong>
-    (<a href="https://github.com/VeigaPunk/xbrd-spark">github.com/VeigaPunk/xbrd-spark</a>)
-    is the pure L3 swarm substrate that runs against
-    <a href="https://github.com/VeigaPunk/codex-titanium">Codex Titanium</a>.
-    Use the Titanium preset here so concurrent <code>sekhmet swarm -j N</code> (cap 64) matches the agent wiring.
-  </p>
-  <p style="margin-top:16px;font-size:12px;color:var(--fg-muted)">JetBrainsMonoNL Nerd Font Mono · pure Rust schemas</p>
 </main>
 </body>
 </html>

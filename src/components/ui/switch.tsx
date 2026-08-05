@@ -1,29 +1,32 @@
-import * as React from "react";
-import * as SwitchPrimitives from "@radix-ui/react-switch";
 import { cn } from "@/lib/utils";
 
-export const Switch = React.forwardRef<
-  React.ComponentRef<typeof SwitchPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
->(({ className, ...props }, ref) => (
-  <SwitchPrimitives.Root
-    className={cn(
-      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-border transition-colors",
-      "data-[state=checked]:bg-accent data-[state=unchecked]:bg-bg-subtle",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-      "disabled:cursor-not-allowed disabled:opacity-50",
-      className,
-    )}
-    {...props}
-    ref={ref}
-  >
-    <SwitchPrimitives.Thumb
+type SwitchProps = {
+  checked: boolean;
+  onCheckedChange: (next: boolean) => void;
+  "aria-label"?: string;
+  className?: string;
+};
+
+export function Switch({ checked, onCheckedChange, className, ...rest }: SwitchProps) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onCheckedChange(!checked)}
       className={cn(
-        "pointer-events-none block h-5 w-5 rounded-full shadow-sm transition-transform",
-        "data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0.5",
-        "data-[state=checked]:bg-accent-fg data-[state=unchecked]:bg-fg-muted",
+        "relative h-6 w-11 shrink-0 rounded-full border border-border transition-colors duration-150",
+        checked ? "bg-accent" : "bg-bg-subtle",
+        className,
       )}
-    />
-  </SwitchPrimitives.Root>
-));
-Switch.displayName = "Switch";
+      {...rest}
+    >
+      <span
+        className={cn(
+          "absolute top-0.5 left-0.5 size-[18px] rounded-full transition-transform duration-150",
+          checked ? "translate-x-5 bg-accent-fg" : "translate-x-0 bg-fg-muted",
+        )}
+      />
+    </button>
+  );
+}

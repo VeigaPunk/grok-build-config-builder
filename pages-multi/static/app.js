@@ -16,6 +16,7 @@
     activeGroup: "all",
     collapsed: new Set(),
     product: PRODUCT,
+    activePreset: null,
   };
   const linkify = (html) =>
     html.replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">${u}</a>`);
@@ -167,8 +168,8 @@
   }
   function builder() {
     const groups = groupsFiltered();
-    const presets = state.schema.presets.map((p) => `<button type="button" class="preset-btn" data-preset="${p.id}"><strong>${esc(p.name)}</strong><span>${esc(p.description)}</span></button>`).join("");
-    const mpres = state.schema.presets.map((p) => `<button type="button" class="btn sm pill" data-preset="${p.id}">${esc(p.name)}</button>`).join("");
+    const presets = state.schema.presets.map((p) => `<button type="button" class="preset-btn${state.activePreset===p.id?" active":""}" data-preset="${p.id}"><strong>${esc(p.name)}</strong><span>${esc(p.description)}</span></button>`).join("");
+    const mpres = state.schema.presets.map((p) => `<button type="button" class="btn sm pill${state.activePreset===p.id?" active":""}" data-preset="${p.id}">${esc(p.name)}</button>`).join("");
     const secs = state.schema.groups.map((g) => `<button type="button" class="btn ghost sm" data-group="${g.id}" style="width:100%;justify-content:flex-start;border-radius:8px">${esc(g.title)}</button>`).join("");
     const body = groups.map(({ group, fields }) => {
       const col = state.collapsed.has(group.id);
@@ -211,6 +212,7 @@
       if (!p) return;
       state.enabled = new Set(p.enabled);
       Object.assign(state.values, p.values);
+      state.activePreset = p.id;
       toast("Applied: " + p.name);
       render();
     }));
@@ -294,6 +296,7 @@
     if (state.schema.env_vars) state.schema.envVars = state.schema.env_vars;
     state.enabled = new Set(state.schema.presets[0].enabled);
     state.values = defaults();
+    state.activePreset = state.schema.presets[0].id;
     await render();
   })().catch((e) => {
     document.getElementById("app").textContent = String(e);
