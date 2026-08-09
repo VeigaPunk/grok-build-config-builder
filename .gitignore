@@ -34,3 +34,5 @@ vercel-deploy-payload.json
 vercel-aio-payload.json
 deploy-*.json
 vercel-*-payload.json
+
+.xbgst/
