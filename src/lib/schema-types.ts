@@ -83,7 +83,7 @@ export const PRODUCTS: {
     title: "Grok Build",
     path: "/grok",
     configPath: "~/.grok/config.toml",
-    blurb: "Titanium · xbgst + livepatch ban — always-approve, xbgst-stack marketplaces, flat subagents.",
+    blurb: "Titanium · xbgst + livepatch ban — always-approve, xbgst-stack marketplaces, flat subagents, workflows killed.",
     accent: "titanium",
     links: [
       { label: "livepatch", href: "https://github.com/VeigaPunk/grok-build-livepatch" },

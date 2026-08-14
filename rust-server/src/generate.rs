@@ -164,6 +164,9 @@ pub fn generate_toml(req: &GenerateRequest) -> String {
             .push(format!("{} = {}", key, formatted));
     }
 
+    // Titanium does not support workflows. Always emit the official kill.
+    sections.insert("workflows".into(), vec!["enabled = false".into()]);
+
     let order = [
         "models",
         "endpoints",
@@ -179,6 +182,7 @@ pub fn generate_toml(req: &GenerateRequest) -> String {
         "features",
         "memory",
         "subagents",
+        "workflows",
         "skills",
         "harness",
         "telemetry",
@@ -254,6 +258,9 @@ pub fn generate_env(req: &GenerateRequest) -> String {
             }
             continue;
         }
+        if env == "GROK_WORKFLOWS" {
+            continue;
+        }
         let val = if let Some(b) = raw.as_bool() {
             if b { "1" } else { "0" }.to_string()
         } else if let Some(s) = raw.as_str() {
@@ -270,6 +277,8 @@ pub fn generate_env(req: &GenerateRequest) -> String {
         lines.push(format!("export {}={}", env, serde_json::to_string(&val).unwrap_or(val)));
         count += 1;
     }
+    lines.push("export GROK_WORKFLOWS=\"0\"".into());
+    count += 1;
     if count == 0 {
         lines.push("# (no env-mapped settings enabled)".into());
     }
