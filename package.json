@@ -90,7 +90,7 @@
     "vite": "^8.1.0"
   },
   "description": "Agent Config Builders Titanium v2 \u2014 Grok (xbgst), Codex, OpenCode interactive patch builders",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/VeigaPunk/grok-build-config-builder.git"

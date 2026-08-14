@@ -156,6 +156,7 @@ function generateToml(schema: ProductSchema, enabled: Set<string>, values: Value
     "memory",
     "subagents",
     "subagents.toggle",
+    "workflows",
     "skills",
     "harness",
     "telemetry",

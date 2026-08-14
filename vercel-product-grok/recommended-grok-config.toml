@@ -1,4 +1,5 @@
 # Recommended Grok Build CLI config for VeigaPunk livepatch + xbgst-stack.
+# Catalog target: Grok Build 1.0.3 (Aug 12 2026).
 # Install: copy to ~/.grok/config.toml (merge with your existing keys), then:
 #   grok plugin marketplace add VeigaPunk/grok-marketplace
 #   grok plugin install xbgst-stack@veigapunk/grok-marketplace --trust
@@ -7,6 +8,10 @@
 #
 # Hard-ban of general-purpose/explore is enforced in the livepatched binary
 # (not only by [subagents.toggle]). First-party full-tool paths use "agent".
+#
+# Grok 4.6 is shipping in Grok Build 1.0.x (official sample: default=grok-build,
+# web_search=grok-4.6). Titanium stays on grok-4.5 until this host is verified
+# against 4.6. After you test, swap the three grok-4.5 strings below.
 
 [cli]
 installer = "internal"

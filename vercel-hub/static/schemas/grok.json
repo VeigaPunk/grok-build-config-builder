@@ -27,6 +27,11 @@
     },
     {
       "category": "Session",
+      "description": "When resuming a remote session, also restore workspace files (1.0.0+)",
+      "flag": "--restore-code"
+    },
+    {
+      "category": "Session",
       "description": "Start session in a new git worktree",
       "flag": "-w, --worktree [<NAME>]"
     },
@@ -86,6 +91,11 @@
       "flag": "--disallowed-tools <LIST>"
     },
     {
+      "category": "Plugins",
+      "description": "Extra plugin directory for this session",
+      "flag": "--plugin-dir <PATH>"
+    },
+    {
       "category": "Agent",
       "description": "Maximum agent turns",
       "flag": "--max-turns <N>"
@@ -139,6 +149,31 @@
       "category": "Headless",
       "description": "Skip background update checks",
       "flag": "--no-auto-update"
+    },
+    {
+      "category": "Aliases",
+      "description": "Claude Code alias \u2192 --tools",
+      "flag": "--allowedTools"
+    },
+    {
+      "category": "Aliases",
+      "description": "Claude Code alias \u2192 --disallowed-tools",
+      "flag": "--disallowedTools"
+    },
+    {
+      "category": "Aliases",
+      "description": "Claude Code alias \u2192 --rules",
+      "flag": "--append-system-prompt"
+    },
+    {
+      "category": "Aliases",
+      "description": "Claude Code alias \u2192 --system-prompt-override",
+      "flag": "--system-prompt"
+    },
+    {
+      "category": "Aliases",
+      "description": "Claude Code alias \u2192 --always-approve",
+      "flag": "--dangerously-skip-permissions"
     }
   ],
   "configPath": "~/.grok/config.toml",
@@ -207,13 +242,53 @@
       "category": "Logging",
       "description": "Log filter e.g. debug",
       "name": "RUST_LOG"
+    },
+    {
+      "category": "CLI",
+      "description": "Release channel: stable | alpha (pairs with grok update --alpha/--stable)",
+      "name": "GROK_CHANNEL"
+    },
+    {
+      "category": "Features",
+      "description": "1/0 workflows /deep-research (default on since 0.2.111)",
+      "name": "GROK_WORKFLOWS"
+    },
+    {
+      "category": "Network",
+      "description": "Extra TLS roots (v0.2.117+)",
+      "name": "GROK_EXTRA_CA_BUNDLE"
+    },
+    {
+      "category": "Features",
+      "description": "Built-in agent name, profile, or path (default grok-build)",
+      "name": "GROK_AGENT"
+    },
+    {
+      "category": "Tools",
+      "description": "Egress proxy URL for web_fetch",
+      "name": "GROK_WEB_FETCH_PROXY"
+    },
+    {
+      "category": "Models",
+      "description": "Custom inference base URL",
+      "name": "GROK_MODELS_BASE_URL"
+    },
+    {
+      "category": "Models",
+      "description": "Override model-list URL",
+      "name": "GROK_MODELS_LIST_URL"
+    },
+    {
+      "category": "Models",
+      "description": "xAI API base (default https://api.x.ai/v1)",
+      "name": "GROK_XAI_API_BASE_URL"
     }
   ],
   "fields": [
     {
       "cli": "-m, --model",
       "default": "grok-4.5",
-      "description": "Model used for new sessions. Titanium default: grok-4.5.",
+      "description": "Model used for new sessions. Titanium stays on grok-4.5 until the host is verified on Grok 4.6. Type grok-4.6 or grok-build to opt in. Official sample (Aug 12): default=grok-build, web_search=grok-4.6.",
       "env": "GROK_DEFAULT_MODEL",
       "group": "models",
       "id": "models.default",
@@ -225,7 +300,7 @@
     },
     {
       "default": "grok-4.5",
-      "description": "Model used by the client-side web_search tool.",
+      "description": "Model used by the client-side web_search tool. Official sample now uses grok-4.6. Titanium field default stays grok-4.5 until 4.6 is verified on this host.",
       "env": "GROK_WEB_SEARCH_MODEL",
       "group": "models",
       "id": "models.web_search",
@@ -709,6 +784,17 @@
       "type": "boolean"
     },
     {
+      "default": 80.0,
+      "description": "Column width for the thoughts panel (40\u2013500). Titanium preset uses 120.",
+      "group": "ui",
+      "id": "ui.max_thoughts_width",
+      "label": "Max thoughts width",
+      "path": "ui.max_thoughts_width",
+      "section": "ui",
+      "type": "number",
+      "recommended": true
+    },
+    {
       "default": true,
       "description": "Fold consecutive read/search/list tool rows.",
       "env": "GROK_GROUP_TOOL_VERBS",
@@ -813,6 +899,18 @@
       "type": "boolean"
     },
     {
+      "cli": "--experimental-memory / --no-memory",
+      "default": false,
+      "description": "Cross-session memory master switch ([memory] enabled). Prefer this over features.memory.",
+      "env": "GROK_MEMORY",
+      "group": "features",
+      "id": "memory.enabled",
+      "label": "Memory enabled",
+      "path": "memory.enabled",
+      "section": "memory",
+      "type": "boolean"
+    },
+    {
       "cli": "--no-subagents",
       "default": true,
       "description": "Enable subagents / the task tool.",
@@ -822,6 +920,18 @@
       "label": "Subagents",
       "path": "features.subagents",
       "section": "features",
+      "type": "boolean"
+    },
+    {
+      "cli": "--no-subagents",
+      "default": true,
+      "description": "Subagent / task tool master switch ([subagents] enabled). Prefer this over features.subagents. Titanium: true.",
+      "env": "GROK_SUBAGENTS",
+      "group": "features",
+      "id": "subagents.enabled",
+      "label": "Subagents enabled",
+      "path": "subagents.enabled",
+      "section": "subagents",
       "type": "boolean"
     },
     {
@@ -866,6 +976,28 @@
       "label": "LSP tools",
       "path": "features.lsp_tools",
       "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Enable workflows / /deep-research (on by default since 0.2.111). Disable with false or GROK_WORKFLOWS=0.",
+      "env": "GROK_WORKFLOWS",
+      "group": "features",
+      "id": "features.workflows",
+      "label": "Workflows",
+      "path": "features.workflows",
+      "section": "features",
+      "type": "boolean"
+    },
+    {
+      "default": true,
+      "description": "Official [workflows] enabled switch (same as features.workflows / GROK_WORKFLOWS). Prefer this path for generated TOML.",
+      "env": "GROK_WORKFLOWS",
+      "group": "features",
+      "id": "workflows.enabled",
+      "label": "Workflows (official section)",
+      "path": "workflows.enabled",
+      "section": "workflows",
       "type": "boolean"
     },
     {
@@ -1086,7 +1218,7 @@
     },
     {
       "default": "grok-4.5",
-      "description": "Secondary model for /fork.",
+      "description": "Secondary model for /fork. Titanium stays grok-4.5 until 4.6 is verified.",
       "group": "ui",
       "id": "ui.fork_secondary_model",
       "label": "Fork secondary model",
@@ -1163,7 +1295,7 @@
     {
       "id": "titanium-xbgst",
       "name": "Titanium \u00b7 xbgst + livepatch ban",
-      "description": "VeigaPunk host defaults: grok-4.5, always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
+      "description": "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
       "enabled": [
         "models.default",
         "models.default_reasoning_effort",
@@ -1181,7 +1313,8 @@
         "subagents.toggle.general_purpose",
         "marketplace.source.xai",
         "marketplace.source.grok_marketplace",
-        "marketplace.source.ds4cc"
+        "marketplace.source.ds4cc",
+        "subagents.enabled"
       ],
       "values": {
         "models.default": "grok-4.5",
@@ -1206,7 +1339,61 @@
         "marketplace.source.xai": "https://github.com/xai-org/plugin-marketplace.git",
         "marketplace.source.grok_marketplace": "https://github.com/VeigaPunk/grok-marketplace.git",
         "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
-        "subagents.max_depth": 1
+        "subagents.max_depth": 1,
+        "subagents.enabled": true
+      }
+    },
+    {
+      "id": "titanium-xbgst-46",
+      "name": "Titanium \u00b7 grok-4.6 (unverified)",
+      "description": "Same xbgst + livepatch ban stack, but models.default / fork / web_search = grok-4.6. NOT blessed \u2014 host has not been tested on Grok 4.6 yet. Use only to generate a trial patch.",
+      "enabled": [
+        "models.default",
+        "models.web_search",
+        "models.default_reasoning_effort",
+        "permissions.permission_mode",
+        "ui.compact_mode",
+        "ui.max_thoughts_width",
+        "ui.fork_secondary_model",
+        "features.subagents",
+        "subagents.max_depth",
+        "plugins.enabled",
+        "cli.installer",
+        "marketplace.official_auto",
+        "marketplace.purge_default_skills",
+        "subagents.toggle.explore",
+        "subagents.toggle.general_purpose",
+        "marketplace.source.xai",
+        "marketplace.source.grok_marketplace",
+        "marketplace.source.ds4cc",
+        "subagents.enabled"
+      ],
+      "values": {
+        "models.default": "grok-4.6",
+        "models.default_reasoning_effort": "low",
+        "permissions.permission_mode": "always-approve",
+        "ui.compact_mode": false,
+        "ui.max_thoughts_width": 120,
+        "ui.fork_secondary_model": "grok-4.6",
+        "features.subagents": true,
+        "plugins.enabled": [
+          "exa",
+          "tinyfish",
+          "cloudflare",
+          "xbgst-stack",
+          "heuer-planning"
+        ],
+        "cli.installer": "internal",
+        "marketplace.official_auto": true,
+        "marketplace.purge_default_skills": true,
+        "subagents.toggle.explore": false,
+        "subagents.toggle.general_purpose": false,
+        "marketplace.source.xai": "https://github.com/xai-org/plugin-marketplace.git",
+        "marketplace.source.grok_marketplace": "https://github.com/VeigaPunk/grok-marketplace.git",
+        "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+        "subagents.max_depth": 1,
+        "subagents.enabled": true,
+        "models.web_search": "grok-4.6"
       }
     },
     {
@@ -1289,7 +1476,7 @@
     }
   ],
   "product": "grok",
-  "productTagline": "Grok Build CLI \u00b7 Titanium xbgst defaults \u00b7 livepatch ban (general-purpose/explore) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
+  "productTagline": "Grok Build CLI 1.0.3 \u00b7 Titanium xbgst defaults (grok-4.5, unverified on 4.6) \u00b7 livepatch ban (general-purpose/explore) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
   "productTitle": "Grok Build",
   "subcommands": [
     {
@@ -1327,7 +1514,55 @@
     {
       "cmd": "grok setup",
       "desc": "Fetch and install managed configuration"
+    },
+    {
+      "cmd": "grok plugin <list|install|uninstall|update|enable|disable|details|validate>",
+      "desc": "Manage plugins"
+    },
+    {
+      "cmd": "grok plugin marketplace <list|add|remove|update>",
+      "desc": "Manage marketplace sources"
+    },
+    {
+      "cmd": "grok export <session-id> [output]",
+      "desc": "Export a session transcript as Markdown"
+    },
+    {
+      "cmd": "grok import [targets...]",
+      "desc": "Import sessions from Claude Code"
+    },
+    {
+      "cmd": "grok memory clear [--workspace|--global|--all]",
+      "desc": "Clear cross-session memory files"
+    },
+    {
+      "cmd": "grok worktree <list|show|rm|gc>",
+      "desc": "Manage git worktrees created for sessions"
+    },
+    {
+      "cmd": "grok dashboard",
+      "desc": "Open the Agent Dashboard"
+    },
+    {
+      "cmd": "grok agent stdio",
+      "desc": "Run as an ACP agent over stdin/stdout"
+    },
+    {
+      "cmd": "grok wrap <command...>",
+      "desc": "Run a command in a local PTY that forwards OSC 52 clipboard writes"
+    },
+    {
+      "cmd": "grok completions <shell>",
+      "desc": "Generate shell completion scripts"
+    },
+    {
+      "cmd": "grok du",
+      "desc": "Show disk usage of ~/.grok (sessions, worktrees) \u2014 1.0.1+"
+    },
+    {
+      "cmd": "grok trace",
+      "desc": "Export traces (bundles memory traces) \u2014 1.0.1+"
     }
   ],
-  "versionNote": "Grok Build CLI \u00b7 Titanium xbgst preset \u00b7 grok-4.5 \u00b7 livepatch-aligned \u00b7 pure Rust builder"
+  "versionNote": "Grok Build CLI 1.0.3 (Aug 12) \u00b7 Titanium xbgst stays grok-4.5 until 4.6 is verified on this host \u00b7 4.6 is catalogued (type grok-4.6) \u00b7 livepatch-aligned"
 }
