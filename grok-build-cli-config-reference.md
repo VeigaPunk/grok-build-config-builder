@@ -205,6 +205,11 @@ trace_upload = false
 [features]
 telemetry = false
 
+[workflows]
+# Official default is ON since 0.2.111. Titanium + livepatch hard-kill.
+# GROK_WORKFLOWS=1 cannot re-enable on a patched binary.
+enabled = false
+
 [mcp_servers.filesystem]
 command = "npx"
 args = ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed"]
@@ -269,6 +274,7 @@ tool_timeout_sec = 6000
 | `harness.disable_codebase_upload` | — | Skip whole-repo upload request |
 | `telemetry.trace_upload` | — | Upload telemetry traces |
 | `features.telemetry` | — | Master telemetry feature flag |
+| `workflows.enabled` | `true` (stock) | Background workflows / `/deep-research`. **Titanium kill: always `false`.** Livepatch hard-forces `resolve_workflows()=false`. |
 | `plugins.paths` / `enabled` / `disabled` | — | Plugin discovery control |
 | `auth.oidc.client_id` | — | Enterprise OIDC |
 | `auth.auth_provider_command` | — | External token command |
@@ -296,6 +302,7 @@ tool_timeout_sec = 6000
 | `GROK_WEB_FETCH_PROXY` | Tools | Egress proxy for web_fetch |
 | `GROK_MEMORY` | Features | 1/0 cross-session memory |
 | `GROK_SUBAGENTS` | Features | 1/0 subagents |
+| `GROK_WORKFLOWS` | Features | Stock: 1/0 workflows /deep-research (default ON). **Titanium + livepatch hard-kill** — `=1` cannot re-enable on a patched binary. |
 | `GROK_AGENT` | Features | Agent name or path |
 | `GROK_WRITE_FILE` | Tools | 0 disables write tool |
 | `GROK_TOOL_SEARCH` | Tools | 1/0 MCP tool discovery |

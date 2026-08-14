@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.0.2 — 2026-08-14
+
+### Workflows killed (not supported)
+
+Titanium does **not** support Grok Build workflows (`workflow` tool, `.grok/workflows/*.rhai`, `/deep-research`). Official default is ON since 0.2.111; we pin the official kill and livepatch hard-forces it.
+
+**Builder**
+- Removed the unofficial `features.workflows` enable toggle
+- Kept official `[workflows] enabled` as a **kill** (default `false`, recommended, Titanium presets pin it)
+- Generated Grok patches always emit `[workflows] enabled = false` and `GROK_WORKFLOWS=0`
+- Recommended `config.toml` pins the kill
+
+**Livepatch** (`VeigaPunk/grok-build-livepatch`)
+- New `0002-kill-workflows.patch`: `resolve_workflows()` always returns `false`
+- Env (`GROK_WORKFLOWS=1`), config, and remote `workflows_enabled` cannot re-enable
+- Spawn already rejects with `workflows_disabled` once the resolver is false
+
+**Not changed**
+- Titanium default model stays `grok-4.5`
+- GP / explore hard-ban unchanged
+
 ## 2.0.1 — 2026-08-14
 
 ### Grok Build 1.0.3 catalog sync

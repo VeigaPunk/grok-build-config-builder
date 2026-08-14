@@ -250,7 +250,7 @@
     },
     {
       "category": "Features",
-      "description": "1/0 workflows /deep-research (default on since 0.2.111)",
+      "description": "Stock: 1/0 background workflows /deep-research (default ON since 0.2.111). Titanium + livepatch hard-kill this — GROK_WORKFLOWS=1 cannot re-enable on a patched binary.",
       "name": "GROK_WORKFLOWS"
     },
     {
@@ -979,24 +979,14 @@
       "type": "boolean"
     },
     {
-      "default": true,
-      "description": "Enable workflows / /deep-research (on by default since 0.2.111). Disable with false or GROK_WORKFLOWS=0.",
-      "env": "GROK_WORKFLOWS",
-      "group": "features",
-      "id": "features.workflows",
-      "label": "Workflows",
-      "path": "features.workflows",
-      "section": "features",
-      "type": "boolean"
-    },
-    {
-      "default": true,
-      "description": "Official [workflows] enabled switch (same as features.workflows / GROK_WORKFLOWS). Prefer this path for generated TOML.",
+      "default": false,
+      "description": "Titanium kill — not a feature. Official [workflows] enabled (workflow tool, .grok/workflows/*.rhai, /deep-research). Stock default ON since 0.2.111. Builder always emits false; livepatch hard-forces resolve_workflows()=false so env/config/remote cannot re-enable.",
       "env": "GROK_WORKFLOWS",
       "group": "features",
       "id": "workflows.enabled",
-      "label": "Workflows (official section)",
+      "label": "Workflows (killed)",
       "path": "workflows.enabled",
+      "recommended": true,
       "section": "workflows",
       "type": "boolean"
     },
@@ -1295,7 +1285,7 @@
     {
       "id": "titanium-xbgst",
       "name": "Titanium \u00b7 xbgst + livepatch ban",
-      "description": "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
+      "description": "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, kill workflows, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
       "enabled": [
         "models.default",
         "models.default_reasoning_effort",
@@ -1314,7 +1304,8 @@
         "marketplace.source.xai",
         "marketplace.source.grok_marketplace",
         "marketplace.source.ds4cc",
-        "subagents.enabled"
+        "subagents.enabled",
+        "workflows.enabled"
       ],
       "values": {
         "models.default": "grok-4.5",
@@ -1340,7 +1331,8 @@
         "marketplace.source.grok_marketplace": "https://github.com/VeigaPunk/grok-marketplace.git",
         "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
         "subagents.max_depth": 1,
-        "subagents.enabled": true
+        "subagents.enabled": true,
+        "workflows.enabled": false
       }
     },
     {
@@ -1366,7 +1358,8 @@
         "marketplace.source.xai",
         "marketplace.source.grok_marketplace",
         "marketplace.source.ds4cc",
-        "subagents.enabled"
+        "subagents.enabled",
+        "workflows.enabled"
       ],
       "values": {
         "models.default": "grok-4.6",
@@ -1393,7 +1386,8 @@
         "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
         "subagents.max_depth": 1,
         "subagents.enabled": true,
-        "models.web_search": "grok-4.6"
+        "models.web_search": "grok-4.6",
+        "workflows.enabled": false
       }
     },
     {
@@ -1476,7 +1470,7 @@
     }
   ],
   "product": "grok",
-  "productTagline": "Grok Build CLI 1.0.3 \u00b7 Titanium xbgst defaults (grok-4.5, unverified on 4.6) \u00b7 livepatch ban (general-purpose/explore) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
+  "productTagline": "Grok Build CLI 1.0.3 \u00b7 Titanium xbgst defaults (grok-4.5, unverified on 4.6) \u00b7 livepatch ban (general-purpose/explore + workflows) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
   "productTitle": "Grok Build",
   "subcommands": [
     {

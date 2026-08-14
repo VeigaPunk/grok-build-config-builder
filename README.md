@@ -1,12 +1,13 @@
-# Agent Config Builders — Titanium **v2.0.1**
+# Agent Config Builders — Titanium **v2.0.2**
 
 Interactive config builders for **Grok Build**, **Codex Titanium**, and **OpenCode Titanium**.
 
-> **Pinned release:** [v2.0.0](https://github.com/VeigaPunk/grok-build-config-builder/releases/tag/v2.0.0) · catalog sync **2.0.1** (Grok Build 1.0.3)
+> **Pinned release:** [v2.0.0](https://github.com/VeigaPunk/grok-build-config-builder/releases/tag/v2.0.0) · catalog **2.0.2** (Grok Build 1.0.3 · workflows killed)
 
-Titanium profiles are the sensible defaults. **Grok** ships `Titanium · xbgst + livepatch ban` (always-approve, **grok-4.5**, xbgst-stack, GP/explore toggles off).
+Titanium profiles are the sensible defaults. **Grok** ships `Titanium · xbgst + livepatch ban` (always-approve, **grok-4.5**, xbgst-stack, GP/explore toggles off, **workflows killed**).
 
-Grok 4.6 is in the catalog as an **unverified** opt-in (`Titanium · grok-4.6 (unverified)`). Titanium stays on 4.5 until the host is tested against 4.6.
+Grok 4.6 is in the catalog as an **unverified** opt-in (`Titanium · grok-4.6 (unverified)`). Titanium stays on 4.5 until the host is tested against 4.6. Workflows are not supported — generated patches always emit `[workflows] enabled = false`.
+
 
 ## Live
 

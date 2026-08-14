@@ -212,7 +212,7 @@ pub fn fields() -> Vec<ConfigField> {
         ConfigField { id: "features.telemetry", path: "features.telemetry", section: "features", group: "privacy", label: "Telemetry feature flag", description: "Master telemetry feature toggle (when supported).", field_type: "boolean", default: Some(jbool(true)), options: None, env: None, cli: None, recommended: None },
         ConfigField { id: "features.image_generation", path: "features.image_generation", section: "features", group: "features", label: "Image generation", description: "Enable image generation tool and slash commands.", field_type: "boolean", default: Some(jbool(true)), options: None, env: None, cli: None, recommended: None },
         ConfigField { id: "features.video_generation", path: "features.video_generation", section: "features", group: "features", label: "Video generation", description: "Enable video generation tool and slash commands.", field_type: "boolean", default: Some(jbool(true)), options: None, env: None, cli: None, recommended: None },
-        ConfigField { id: "features.workflows", path: "features.workflows", section: "features", group: "features", label: "Workflows", description: "Enable workflows (on by default since 0.2.111).", field_type: "boolean", default: Some(jbool(true)), options: None, env: None, cli: None, recommended: None },
+        ConfigField { id: "workflows.enabled", path: "workflows.enabled", section: "workflows", group: "features", label: "Workflows (killed)", description: "Titanium kill — not a feature. Official [workflows] enabled. Stock default ON since 0.2.111. Builder always emits false; livepatch hard-forces resolve_workflows()=false.", field_type: "boolean", default: Some(jbool(false)), options: None, env: Some("GROK_WORKFLOWS"), cli: None, recommended: Some(true) },
 
         // Memory / subagents dedicated sections
         ConfigField { id: "memory.enabled", path: "memory.enabled", section: "memory", group: "memory", label: "Memory enabled", description: "Cross-session memory master switch.", field_type: "boolean", default: Some(jbool(false)), options: None, env: Some("GROK_MEMORY"), cli: Some("--experimental-memory"), recommended: None },
@@ -314,7 +314,7 @@ pub fn env_vars() -> &'static [EnvVar] {
         EnvVar { name: "GROK_CHANNEL", description: "Release channel: stable | alpha", category: "CLI" },
         EnvVar { name: "GROK_MEMORY", description: "1/0 cross-session memory", category: "Features" },
         EnvVar { name: "GROK_SUBAGENTS", description: "1/0 subagents / task tool", category: "Features" },
-        EnvVar { name: "GROK_WORKFLOWS", description: "1/0 workflows /deep-research (default on since 0.2.111)", category: "Features" },
+        EnvVar { name: "GROK_WORKFLOWS", description: "Stock: 1/0 workflows /deep-research (default ON). Titanium + livepatch hard-kill — GROK_WORKFLOWS=1 cannot re-enable on a patched binary.", category: "Features" },
         EnvVar { name: "GROK_AGENT", description: "Built-in agent name, profile, or path", category: "Features" },
         EnvVar { name: "GROK_WEB_FETCH", description: "1/0 enable web_fetch", category: "Tools" },
         EnvVar { name: "GROK_WEB_FETCH_PROXY", description: "Egress proxy URL for web_fetch", category: "Tools" },
@@ -391,20 +391,22 @@ pub fn presets() -> Vec<Preset> {
         Preset {
             id: "titanium-xbgst",
             name: "Titanium · xbgst + livepatch ban",
-            description: "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack plugins, ban GP/explore toggles. Pairs with grok-build-livepatch.",
+            description: "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack plugins, ban GP/explore, kill workflows. Pairs with grok-build-livepatch.",
             enabled: &[
                 "models.default",
                 "models.default_reasoning_effort",
                 "permissions.permission_mode",
                 "features.subagents",
                 "plugins.enabled",
+                "workflows.enabled",
             ],
             values: serde_json::json!({
                 "models.default": "grok-4.5",
                 "models.default_reasoning_effort": "low",
                 "permissions.permission_mode": "always-approve",
                 "features.subagents": true,
-                "plugins.enabled": ["exa", "tinyfish", "cloudflare", "xbgst-stack", "heuer-planning"]
+                "plugins.enabled": ["exa", "tinyfish", "cloudflare", "xbgst-stack", "heuer-planning"],
+                "workflows.enabled": false
             }),
         },
         Preset {
@@ -494,6 +496,6 @@ pub fn payload() -> SchemaPayload {
         env_vars: env_vars(),
         subcommands: subcommands(),
         presets: presets(),
-        version_note: "Grok Build CLI 1.0.3 · Titanium xbgst stays grok-4.5 until 4.6 is verified · livepatch-aligned · pure Rust builder",
+        version_note: "Grok Build CLI 1.0.3 · Titanium xbgst stays grok-4.5 until 4.6 is verified · workflows killed · livepatch-aligned · pure Rust builder",
     }
 }

@@ -9,6 +9,11 @@
 # Hard-ban of general-purpose/explore is enforced in the livepatched binary
 # (not only by [subagents.toggle]). First-party full-tool paths use "agent".
 #
+# Workflows are killed. Official default is ON since 0.2.111 (`workflow` tool,
+# `.grok/workflows/*.rhai`, `/deep-research`). Titanium emits enabled=false;
+# livepatch hard-forces resolve_workflows()=false so GROK_WORKFLOWS=1 cannot
+# re-enable.
+#
 # Grok 4.6 is shipping in Grok Build 1.0.x (official sample: default=grok-build,
 # web_search=grok-4.6). Titanium stays on grok-4.5 until this host is verified
 # against 4.6. After you test, swap the three grok-4.5 strings below.
@@ -62,3 +67,8 @@ max_depth = 1
 # Defense in depth: CLI livepatch already hard-rejects these at spawn.
 explore = false
 general-purpose = false
+
+[workflows]
+# Official default is ON. Titanium + livepatch hard-kill.
+# Env override GROK_WORKFLOWS=1 is ignored on a patched binary.
+enabled = false

@@ -132,6 +132,12 @@ function generateToml(schema: ProductSchema, enabled: Set<string>, values: Value
     }
   }
 
+  if (product === "grok") {
+    // Titanium does not support workflows. Always emit the official kill.
+    // Livepatch hard-forces resolve_workflows()=false on top of this.
+    sections.workflows = ["enabled = false"];
+  }
+
   const header = [
     `# Generated Titanium config · ${product || "agent"}`,
     `# Merge into ${schema.configPath || "config"}`,
@@ -221,12 +227,19 @@ function generateEnv(schema: ProductSchema, enabled: Set<string>, values: Values
       }
       continue;
     }
+    if (schema.product === "grok" && f.env === "GROK_WORKFLOWS") {
+      continue;
+    }
     let val: string;
     if (typeof raw === "boolean") val = raw ? "1" : "0";
     else if (typeof raw === "number") val = String(raw);
     else if (Array.isArray(raw)) val = raw.join(",");
     else val = String(raw);
     lines.push(`export ${f.env}=${JSON.stringify(val)}`);
+    count++;
+  }
+  if (schema.product === "grok") {
+    lines.push('export GROK_WORKFLOWS="0"');
     count++;
   }
   if (!count) lines.push("# (no env-mapped settings enabled)");
@@ -344,6 +357,7 @@ function generateMarkdown(schema: ProductSchema, config: string, env: string, cl
           "3. `grok plugin install xbgst-stack@veigapunk/grok-marketplace --trust`",
           "4. Run the xbgst-stack host install scripts (livepatch-aligned binary)",
           "5. Hard-ban of `general-purpose` / `explore` is enforced by livepatch + `[subagents.toggle]`",
+          "6. Workflows are killed: `[workflows] enabled = false` + `GROK_WORKFLOWS=0`. Livepatch hard-forces `resolve_workflows()=false` so env/config/remote cannot re-enable.",
           "",
           "Recommended static file: `/recommended-grok-config.toml`",
           "",
