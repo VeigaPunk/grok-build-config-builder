@@ -88,24 +88,96 @@ fn jbool(b: bool) -> serde_json::Value {
 
 pub fn groups() -> &'static [FieldGroup] {
     &[
-        FieldGroup { id: "models", title: "Models", description: "Default model, web search model, sampling, and catalog filters." },
-        FieldGroup { id: "model-provider", title: "Custom model provider", description: "BYOK / custom endpoint for a named model (optional)." },
-        FieldGroup { id: "sandbox", title: "Sandbox", description: "Filesystem sandbox profile and bash auto-allow." },
-        FieldGroup { id: "permissions", title: "Permissions", description: "Permission mode and tool approval defaults." },
-        FieldGroup { id: "session", title: "Session", description: "Auto-compact and session behavior." },
-        FieldGroup { id: "cli", title: "CLI", description: "Auto-update channel and startup tips." },
-        FieldGroup { id: "hints", title: "Worktree hints", description: "When /new and /fork offer git worktrees." },
-        FieldGroup { id: "ui", title: "UI", description: "Theme, layout, thinking blocks, scroll, voice, hints." },
-        FieldGroup { id: "features", title: "Features", description: "Memory, subagents, web tools, write tool, LSP, media tools." },
-        FieldGroup { id: "memory", title: "Memory", description: "Cross-session memory master switch." },
-        FieldGroup { id: "subagents", title: "Subagents", description: "Task/subagent master switch." },
-        FieldGroup { id: "skills", title: "Skills", description: "Extra skill directories and disable list." },
-        FieldGroup { id: "privacy", title: "Privacy & telemetry", description: "Codebase upload, trace upload, telemetry toggles." },
-        FieldGroup { id: "auth", title: "Auth & enterprise", description: "OIDC, API key policy, team login pin." },
-        FieldGroup { id: "plugins", title: "Plugins", description: "Extra plugin paths and enable/disable lists." },
-        FieldGroup { id: "compat", title: "Compat (Cursor / Claude)", description: "Scan Cursor and Claude Code config surfaces." },
-        FieldGroup { id: "mcp", title: "MCP sample", description: "Optional [mcp_servers.*] stdio entry." },
-        FieldGroup { id: "endpoints", title: "Endpoints", description: "Custom models base URL / list URL." },
+        FieldGroup {
+            id: "models",
+            title: "Models",
+            description: "Default model, web search model, sampling, and catalog filters.",
+        },
+        FieldGroup {
+            id: "model-provider",
+            title: "Custom model provider",
+            description: "BYOK / custom endpoint for a named model (optional).",
+        },
+        FieldGroup {
+            id: "sandbox",
+            title: "Sandbox",
+            description: "Filesystem sandbox profile and bash auto-allow.",
+        },
+        FieldGroup {
+            id: "permissions",
+            title: "Permissions",
+            description: "Permission mode and tool approval defaults.",
+        },
+        FieldGroup {
+            id: "session",
+            title: "Session",
+            description: "Auto-compact and session behavior.",
+        },
+        FieldGroup {
+            id: "cli",
+            title: "CLI",
+            description: "Auto-update channel and startup tips.",
+        },
+        FieldGroup {
+            id: "hints",
+            title: "Worktree hints",
+            description: "When /new and /fork offer git worktrees.",
+        },
+        FieldGroup {
+            id: "ui",
+            title: "UI",
+            description: "Theme, layout, thinking blocks, scroll, voice, hints.",
+        },
+        FieldGroup {
+            id: "features",
+            title: "Features",
+            description: "Memory, subagents, web tools, write tool, LSP, media tools.",
+        },
+        FieldGroup {
+            id: "memory",
+            title: "Memory",
+            description: "Cross-session memory master switch.",
+        },
+        FieldGroup {
+            id: "subagents",
+            title: "Subagents",
+            description: "Task/subagent master switch.",
+        },
+        FieldGroup {
+            id: "skills",
+            title: "Skills",
+            description: "Extra skill directories and disable list.",
+        },
+        FieldGroup {
+            id: "privacy",
+            title: "Privacy & telemetry",
+            description: "Codebase upload, trace upload, telemetry toggles.",
+        },
+        FieldGroup {
+            id: "auth",
+            title: "Auth & enterprise",
+            description: "OIDC, API key policy, team login pin.",
+        },
+        FieldGroup {
+            id: "plugins",
+            title: "Plugins",
+            description: "Extra plugin paths and enable/disable lists.",
+        },
+        FieldGroup {
+            id: "compat",
+            title: "Compat (Cursor / Claude)",
+            description: "Scan Cursor and Claude Code config surfaces.",
+        },
+        FieldGroup {
+            id: "mcp",
+            title: "MCP sample",
+            description: "Optional [mcp_servers.*] stdio entry.",
+        },
+        FieldGroup {
+            id: "endpoints",
+            title: "Endpoints",
+            description: "Custom models base URL / list URL.",
+        },
     ]
 }
 
@@ -217,6 +289,10 @@ pub fn fields() -> Vec<ConfigField> {
         // Memory / subagents dedicated sections
         ConfigField { id: "memory.enabled", path: "memory.enabled", section: "memory", group: "memory", label: "Memory enabled", description: "Cross-session memory master switch.", field_type: "boolean", default: Some(jbool(false)), options: None, env: Some("GROK_MEMORY"), cli: Some("--experimental-memory"), recommended: None },
         ConfigField { id: "subagents.enabled", path: "subagents.enabled", section: "subagents", group: "subagents", label: "Subagents enabled", description: "Subagent / task tool master switch.", field_type: "boolean", default: Some(jbool(true)), options: None, env: Some("GROK_SUBAGENTS"), cli: Some("--no-subagents"), recommended: None },
+        ConfigField { id: "subagents.max_depth", path: "subagents.max_depth", section: "subagents", group: "subagents", label: "Subagent max nesting depth", description: "Max nesting depth (1 = flat tree). Raise to 2 only for nested sub-leads.", field_type: "number", default: Some(jnum(1.0)), options: None, env: Some("GROK_SUBAGENTS_MAX_DEPTH"), cli: None, recommended: Some(true) },
+        ConfigField { id: "subagents.max_concurrent", path: "subagents.max_concurrent", section: "subagents", group: "subagents", label: "Max concurrent subagents", description: "Session sibling cap. Titanium + livepatch default 64. Env GROK_MAX_CONCURRENT_SUBAGENTS. Remote 4-slot pins are ignored on a patched binary.", field_type: "number", default: Some(jnum(64.0)), options: None, env: Some("GROK_MAX_CONCURRENT_SUBAGENTS"), cli: None, recommended: Some(true) },
+        ConfigField { id: "subagents.toggle.explore", path: "subagents.toggle.explore", section: "subagents.toggle", group: "subagents", label: "Subagent toggle: explore", description: "Defense in depth: disable explore (livepatch also hard-bans spawn).", field_type: "boolean", default: Some(jbool(false)), options: None, env: None, cli: None, recommended: Some(true) },
+        ConfigField { id: "subagents.toggle.general_purpose", path: "subagents.toggle.general-purpose", section: "subagents.toggle", group: "subagents", label: "Subagent toggle: general-purpose", description: "Defense in depth: disable general-purpose (livepatch hard-bans spawn; use agent alias).", field_type: "boolean", default: Some(jbool(false)), options: None, env: None, cli: None, recommended: Some(true) },
 
         // Skills
         ConfigField { id: "skills.paths", path: "skills.paths", section: "skills", group: "skills", label: "Skill paths", description: "Extra skill directories.", field_type: "string-list", default: None, options: None, env: None, cli: None, recommended: None },
@@ -261,41 +337,181 @@ pub fn fields() -> Vec<ConfigField> {
 
 pub fn cli_flags() -> &'static [CliFlag] {
     &[
-        CliFlag { flag: "--cwd <PATH>", description: "Set working directory", category: "Session" },
-        CliFlag { flag: "-r, --resume [<ID>]", description: "Resume session (omit ID = most recent)", category: "Session" },
-        CliFlag { flag: "-c, --continue", description: "Continue most recent session for this directory", category: "Session" },
-        CliFlag { flag: "-s, --session-id <UUID>", description: "Use a specific UUID for a new session", category: "Session" },
-        CliFlag { flag: "--fork-session", description: "When resuming, fork into a new session ID", category: "Session" },
-        CliFlag { flag: "--restore-code", description: "When resuming a remote session, also restore workspace files (1.0.0+)", category: "Session" },
-        CliFlag { flag: "-w, --worktree [<NAME>]", description: "Start session in a new git worktree", category: "Session" },
-        CliFlag { flag: "--ref <REF>", description: "Branch, tag, or commit for the worktree", category: "Session" },
-        CliFlag { flag: "-m, --model <MODEL>", description: "Model ID", category: "Model" },
-        CliFlag { flag: "--effort <LEVEL>", description: "Reasoning effort level", category: "Model" },
-        CliFlag { flag: "--always-approve / --yolo", description: "Auto-approve all tool executions", category: "Permissions" },
-        CliFlag { flag: "--allow <RULE>", description: "Permission allow rule (e.g. 'Bash(git *)')", category: "Permissions" },
-        CliFlag { flag: "--deny <RULE>", description: "Permission deny rule", category: "Permissions" },
-        CliFlag { flag: "--sandbox <PROFILE>", description: "Sandbox profile: off | workspace | read-only | strict", category: "Permissions" },
-        CliFlag { flag: "--rules <TEXT>", description: "Append extra rules to system prompt", category: "Prompt" },
-        CliFlag { flag: "--system-prompt-override <TEXT>", description: "Replace system prompt entirely", category: "Prompt" },
-        CliFlag { flag: "--tools <LIST>", description: "Allow only these built-in tools", category: "Tools" },
-        CliFlag { flag: "--disallowed-tools <LIST>", description: "Disallow built-in tools", category: "Tools" },
-        CliFlag { flag: "--plugin-dir <PATH>", description: "Extra plugin directory for this session", category: "Plugins" },
-        CliFlag { flag: "--max-turns <N>", description: "Maximum agent turns", category: "Agent" },
-        CliFlag { flag: "--no-plan", description: "Disable planning", category: "Agent" },
-        CliFlag { flag: "--no-subagents", description: "Disable subagents", category: "Agent" },
-        CliFlag { flag: "--no-memory", description: "Disable memory", category: "Agent" },
-        CliFlag { flag: "--disable-web-search", description: "Disable web search", category: "Agent" },
-        CliFlag { flag: "--experimental-memory", description: "Enable cross-session memory", category: "Agent" },
-        CliFlag { flag: "--oauth", description: "Use OAuth when welcome screen starts auth", category: "Auth" },
-        CliFlag { flag: "-p, --single <PROMPT>", description: "Headless one-shot prompt", category: "Headless" },
-        CliFlag { flag: "--output-format <FMT>", description: "plain | json | streaming-json", category: "Headless" },
-        CliFlag { flag: "--no-alt-screen", description: "Inline (no fullscreen TUI takeover)", category: "Headless" },
-        CliFlag { flag: "--no-auto-update", description: "Skip background update checks", category: "Headless" },
-        CliFlag { flag: "--allowedTools", description: "Claude Code alias → --tools", category: "Aliases" },
-        CliFlag { flag: "--disallowedTools", description: "Claude Code alias → --disallowed-tools", category: "Aliases" },
-        CliFlag { flag: "--append-system-prompt", description: "Claude Code alias → --rules", category: "Aliases" },
-        CliFlag { flag: "--system-prompt", description: "Claude Code alias → --system-prompt-override", category: "Aliases" },
-        CliFlag { flag: "--dangerously-skip-permissions", description: "Claude Code alias → --always-approve", category: "Aliases" },
+        CliFlag {
+            flag: "--cwd <PATH>",
+            description: "Set working directory",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "-r, --resume [<ID>]",
+            description: "Resume session (omit ID = most recent)",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "-c, --continue",
+            description: "Continue most recent session for this directory",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "-s, --session-id <UUID>",
+            description: "Use a specific UUID for a new session",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "--fork-session",
+            description: "When resuming, fork into a new session ID",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "--restore-code",
+            description: "When resuming a remote session, also restore workspace files (1.0.0+)",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "-w, --worktree [<NAME>]",
+            description: "Start session in a new git worktree",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "--ref <REF>",
+            description: "Branch, tag, or commit for the worktree",
+            category: "Session",
+        },
+        CliFlag {
+            flag: "-m, --model <MODEL>",
+            description: "Model ID",
+            category: "Model",
+        },
+        CliFlag {
+            flag: "--effort <LEVEL>",
+            description: "Reasoning effort level",
+            category: "Model",
+        },
+        CliFlag {
+            flag: "--always-approve / --yolo",
+            description: "Auto-approve all tool executions",
+            category: "Permissions",
+        },
+        CliFlag {
+            flag: "--allow <RULE>",
+            description: "Permission allow rule (e.g. 'Bash(git *)')",
+            category: "Permissions",
+        },
+        CliFlag {
+            flag: "--deny <RULE>",
+            description: "Permission deny rule",
+            category: "Permissions",
+        },
+        CliFlag {
+            flag: "--sandbox <PROFILE>",
+            description: "Sandbox profile: off | workspace | read-only | strict",
+            category: "Permissions",
+        },
+        CliFlag {
+            flag: "--rules <TEXT>",
+            description: "Append extra rules to system prompt",
+            category: "Prompt",
+        },
+        CliFlag {
+            flag: "--system-prompt-override <TEXT>",
+            description: "Replace system prompt entirely",
+            category: "Prompt",
+        },
+        CliFlag {
+            flag: "--tools <LIST>",
+            description: "Allow only these built-in tools",
+            category: "Tools",
+        },
+        CliFlag {
+            flag: "--disallowed-tools <LIST>",
+            description: "Disallow built-in tools",
+            category: "Tools",
+        },
+        CliFlag {
+            flag: "--plugin-dir <PATH>",
+            description: "Extra plugin directory for this session",
+            category: "Plugins",
+        },
+        CliFlag {
+            flag: "--max-turns <N>",
+            description: "Maximum agent turns",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--no-plan",
+            description: "Disable planning",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--no-subagents",
+            description: "Disable subagents",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--no-memory",
+            description: "Disable memory",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--disable-web-search",
+            description: "Disable web search",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--experimental-memory",
+            description: "Enable cross-session memory",
+            category: "Agent",
+        },
+        CliFlag {
+            flag: "--oauth",
+            description: "Use OAuth when welcome screen starts auth",
+            category: "Auth",
+        },
+        CliFlag {
+            flag: "-p, --single <PROMPT>",
+            description: "Headless one-shot prompt",
+            category: "Headless",
+        },
+        CliFlag {
+            flag: "--output-format <FMT>",
+            description: "plain | json | streaming-json",
+            category: "Headless",
+        },
+        CliFlag {
+            flag: "--no-alt-screen",
+            description: "Inline (no fullscreen TUI takeover)",
+            category: "Headless",
+        },
+        CliFlag {
+            flag: "--no-auto-update",
+            description: "Skip background update checks",
+            category: "Headless",
+        },
+        CliFlag {
+            flag: "--allowedTools",
+            description: "Claude Code alias → --tools",
+            category: "Aliases",
+        },
+        CliFlag {
+            flag: "--disallowedTools",
+            description: "Claude Code alias → --disallowed-tools",
+            category: "Aliases",
+        },
+        CliFlag {
+            flag: "--append-system-prompt",
+            description: "Claude Code alias → --rules",
+            category: "Aliases",
+        },
+        CliFlag {
+            flag: "--system-prompt",
+            description: "Claude Code alias → --system-prompt-override",
+            category: "Aliases",
+        },
+        CliFlag {
+            flag: "--dangerously-skip-permissions",
+            description: "Claude Code alias → --always-approve",
+            category: "Aliases",
+        },
     ]
 }
 
@@ -314,6 +530,8 @@ pub fn env_vars() -> &'static [EnvVar] {
         EnvVar { name: "GROK_CHANNEL", description: "Release channel: stable | alpha", category: "CLI" },
         EnvVar { name: "GROK_MEMORY", description: "1/0 cross-session memory", category: "Features" },
         EnvVar { name: "GROK_SUBAGENTS", description: "1/0 subagents / task tool", category: "Features" },
+        EnvVar { name: "GROK_MAX_CONCURRENT_SUBAGENTS", description: "Session sibling cap (Titanium/livepatch default 64)", category: "Features" },
+        EnvVar { name: "GROK_SUBAGENTS_MAX_DEPTH", description: "Subagent nesting depth (1 = flat tree)", category: "Features" },
         EnvVar { name: "GROK_WORKFLOWS", description: "Stock: 1/0 workflows /deep-research (default ON). Titanium + livepatch hard-kill — GROK_WORKFLOWS=1 cannot re-enable on a patched binary.", category: "Features" },
         EnvVar { name: "GROK_AGENT", description: "Built-in agent name, profile, or path", category: "Features" },
         EnvVar { name: "GROK_WEB_FETCH", description: "1/0 enable web_fetch", category: "Tools" },
@@ -362,27 +580,90 @@ pub fn env_vars() -> &'static [EnvVar] {
 
 pub fn subcommands() -> &'static [Subcommand] {
     &[
-        Subcommand { cmd: "grok login [--device-auth]", desc: "Sign in (device-code for headless)" },
-        Subcommand { cmd: "grok logout", desc: "Sign out and clear credentials" },
-        Subcommand { cmd: "grok inspect [--json]", desc: "Show discovered config for current directory" },
-        Subcommand { cmd: "grok models", desc: "List available models" },
-        Subcommand { cmd: "grok mcp <list|add|remove|doctor>", desc: "Manage MCP servers" },
-        Subcommand { cmd: "grok plugin <…>", desc: "Install/enable/disable plugins" },
-        Subcommand { cmd: "grok plugin marketplace <…>", desc: "Manage marketplace sources" },
-        Subcommand { cmd: "grok sessions <list|search|delete>", desc: "Manage sessions" },
-        Subcommand { cmd: "grok export <id> [out]", desc: "Export session as Markdown" },
-        Subcommand { cmd: "grok import [targets…]", desc: "Import sessions from Claude Code" },
-        Subcommand { cmd: "grok memory clear [--workspace|--global|--all]", desc: "Clear memory files" },
-        Subcommand { cmd: "grok worktree <list|show|rm|gc>", desc: "Manage session worktrees" },
-        Subcommand { cmd: "grok dashboard", desc: "Open Agent Dashboard" },
-        Subcommand { cmd: "grok agent stdio", desc: "Run as ACP agent over stdin/stdout" },
-        Subcommand { cmd: "grok wrap <command…>", desc: "PTY with OSC 52 clipboard forwarding" },
-        Subcommand { cmd: "grok update [--check|--stable|--alpha]", desc: "Update CLI" },
-        Subcommand { cmd: "grok version", desc: "Print version" },
-        Subcommand { cmd: "grok completions <shell>", desc: "Shell completion scripts" },
-        Subcommand { cmd: "grok du", desc: "Show disk usage of ~/.grok (sessions, worktrees) — 1.0.1+" },
-        Subcommand { cmd: "grok trace", desc: "Export traces (bundles memory traces) — 1.0.1+" },
-        Subcommand { cmd: "grok setup", desc: "Fetch and install managed configuration" },
+        Subcommand {
+            cmd: "grok login [--device-auth]",
+            desc: "Sign in (device-code for headless)",
+        },
+        Subcommand {
+            cmd: "grok logout",
+            desc: "Sign out and clear credentials",
+        },
+        Subcommand {
+            cmd: "grok inspect [--json]",
+            desc: "Show discovered config for current directory",
+        },
+        Subcommand {
+            cmd: "grok models",
+            desc: "List available models",
+        },
+        Subcommand {
+            cmd: "grok mcp <list|add|remove|doctor>",
+            desc: "Manage MCP servers",
+        },
+        Subcommand {
+            cmd: "grok plugin <…>",
+            desc: "Install/enable/disable plugins",
+        },
+        Subcommand {
+            cmd: "grok plugin marketplace <…>",
+            desc: "Manage marketplace sources",
+        },
+        Subcommand {
+            cmd: "grok sessions <list|search|delete>",
+            desc: "Manage sessions",
+        },
+        Subcommand {
+            cmd: "grok export <id> [out]",
+            desc: "Export session as Markdown",
+        },
+        Subcommand {
+            cmd: "grok import [targets…]",
+            desc: "Import sessions from Claude Code",
+        },
+        Subcommand {
+            cmd: "grok memory clear [--workspace|--global|--all]",
+            desc: "Clear memory files",
+        },
+        Subcommand {
+            cmd: "grok worktree <list|show|rm|gc>",
+            desc: "Manage session worktrees",
+        },
+        Subcommand {
+            cmd: "grok dashboard",
+            desc: "Open Agent Dashboard",
+        },
+        Subcommand {
+            cmd: "grok agent stdio",
+            desc: "Run as ACP agent over stdin/stdout",
+        },
+        Subcommand {
+            cmd: "grok wrap <command…>",
+            desc: "PTY with OSC 52 clipboard forwarding",
+        },
+        Subcommand {
+            cmd: "grok update [--check|--stable|--alpha]",
+            desc: "Update CLI",
+        },
+        Subcommand {
+            cmd: "grok version",
+            desc: "Print version",
+        },
+        Subcommand {
+            cmd: "grok completions <shell>",
+            desc: "Shell completion scripts",
+        },
+        Subcommand {
+            cmd: "grok du",
+            desc: "Show disk usage of ~/.grok (sessions, worktrees) — 1.0.1+",
+        },
+        Subcommand {
+            cmd: "grok trace",
+            desc: "Export traces (bundles memory traces) — 1.0.1+",
+        },
+        Subcommand {
+            cmd: "grok setup",
+            desc: "Fetch and install managed configuration",
+        },
     ]
 }
 
@@ -391,12 +672,17 @@ pub fn presets() -> Vec<Preset> {
         Preset {
             id: "titanium-xbgst",
             name: "Titanium · xbgst + livepatch ban",
-            description: "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack plugins, ban GP/explore, kill workflows. Pairs with grok-build-livepatch.",
+            description: "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack plugins, ban GP/explore, kill workflows, and host-governed sibling concurrency certified at 64. Pairs with grok-build-livepatch.",
             enabled: &[
                 "models.default",
                 "models.default_reasoning_effort",
                 "permissions.permission_mode",
                 "features.subagents",
+                "subagents.enabled",
+                "subagents.max_depth",
+                "subagents.max_concurrent",
+                "subagents.toggle.explore",
+                "subagents.toggle.general_purpose",
                 "plugins.enabled",
                 "workflows.enabled",
             ],
@@ -405,6 +691,11 @@ pub fn presets() -> Vec<Preset> {
                 "models.default_reasoning_effort": "low",
                 "permissions.permission_mode": "always-approve",
                 "features.subagents": true,
+                "subagents.enabled": true,
+                "subagents.max_depth": 1,
+                "subagents.max_concurrent": 64,
+                "subagents.toggle.explore": false,
+                "subagents.toggle.general_purpose": false,
                 "plugins.enabled": ["exa", "tinyfish", "cloudflare", "xbgst-stack", "heuer-planning"],
                 "workflows.enabled": false
             }),

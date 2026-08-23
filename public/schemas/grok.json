@@ -152,27 +152,27 @@
     },
     {
       "category": "Aliases",
-      "description": "Claude Code alias \u2192 --tools",
+      "description": "Claude Code alias → --tools",
       "flag": "--allowedTools"
     },
     {
       "category": "Aliases",
-      "description": "Claude Code alias \u2192 --disallowed-tools",
+      "description": "Claude Code alias → --disallowed-tools",
       "flag": "--disallowedTools"
     },
     {
       "category": "Aliases",
-      "description": "Claude Code alias \u2192 --rules",
+      "description": "Claude Code alias → --rules",
       "flag": "--append-system-prompt"
     },
     {
       "category": "Aliases",
-      "description": "Claude Code alias \u2192 --system-prompt-override",
+      "description": "Claude Code alias → --system-prompt-override",
       "flag": "--system-prompt"
     },
     {
       "category": "Aliases",
-      "description": "Claude Code alias \u2192 --always-approve",
+      "description": "Claude Code alias → --always-approve",
       "flag": "--dangerously-skip-permissions"
     }
   ],
@@ -633,7 +633,7 @@
     },
     {
       "default": 85.0,
-      "description": "Auto-compact when context usage reaches this percent (0\u2013100).",
+      "description": "Auto-compact when context usage reaches this percent (0–100).",
       "group": "session",
       "id": "session.auto_compact_threshold_percent",
       "label": "Auto-compact threshold %",
@@ -785,7 +785,7 @@
     },
     {
       "default": 80.0,
-      "description": "Column width for the thoughts panel (40\u2013500). Titanium preset uses 120.",
+      "description": "Column width for the thoughts panel (40–500). Titanium preset uses 120.",
       "group": "ui",
       "id": "ui.max_thoughts_width",
       "label": "Max thoughts width",
@@ -829,7 +829,7 @@
     },
     {
       "default": 50.0,
-      "description": "Mouse/trackpad scroll speed (1\u2013100).",
+      "description": "Mouse/trackpad scroll speed (1–100).",
       "env": "GROK_SCROLL_SPEED",
       "group": "ui",
       "id": "ui.scroll_speed",
@@ -1204,7 +1204,19 @@
       "default": 1,
       "recommended": true,
       "env": "GROK_SUBAGENTS_MAX_DEPTH",
-      "description": "Max subagent nesting depth (default 1 = flat tree: main may spawn children; children cannot spawn Task). Raise to 2+ only for nested sub-leads. xbgst hardcap 16 is concurrent siblings, not depth. No host max-concurrent knob."
+      "description": "Max subagent nesting depth (default 1 = flat tree). Raise to 2+ only for nested sub-leads. Sibling concurrency is [subagents] max_concurrent (Titanium 64)."
+    },
+    {
+      "id": "subagents.max_concurrent",
+      "label": "Max concurrent subagents",
+      "path": "subagents.max_concurrent",
+      "section": "subagents",
+      "group": "features",
+      "type": "number",
+      "default": 64,
+      "recommended": true,
+      "env": "GROK_MAX_CONCURRENT_SUBAGENTS",
+      "description": "Session sibling cap. Titanium + livepatch default 64. Env GROK_MAX_CONCURRENT_SUBAGENTS. Remote 4-slot pins are ignored on a patched binary."
     },
     {
       "default": "grok-4.5",
@@ -1284,8 +1296,8 @@
   "presets": [
     {
       "id": "titanium-xbgst",
-      "name": "Titanium \u00b7 xbgst + livepatch ban",
-      "description": "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, kill workflows, subagents.max_depth=1 (flat tree for godspeed \u226416 concurrent siblings), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
+      "name": "Titanium · xbgst + livepatch ban",
+      "description": "VeigaPunk host defaults: grok-4.5 (4.6 not yet verified on this CLI), always-approve, xbgst-stack + DS4CC marketplaces, ban general-purpose/explore toggles, kill workflows, subagents.max_depth=1 (flat tree; sibling concurrency is host-governed and certified at 64), livepatch-aligned. Pairs with VeigaPunk/grok-build-livepatch + grok-marketplace.",
       "enabled": [
         "models.default",
         "models.default_reasoning_effort",
@@ -1295,6 +1307,7 @@
         "ui.fork_secondary_model",
         "features.subagents",
         "subagents.max_depth",
+        "subagents.max_concurrent",
         "plugins.enabled",
         "cli.installer",
         "marketplace.official_auto",
@@ -1332,13 +1345,14 @@
         "marketplace.source.ds4cc": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
         "subagents.max_depth": 1,
         "subagents.enabled": true,
-        "workflows.enabled": false
+        "workflows.enabled": false,
+        "subagents.max_concurrent": 64
       }
     },
     {
       "id": "titanium-xbgst-46",
-      "name": "Titanium \u00b7 grok-4.6 (unverified)",
-      "description": "Same xbgst + livepatch ban stack, but models.default / fork / web_search = grok-4.6. NOT blessed \u2014 host has not been tested on Grok 4.6 yet. Use only to generate a trial patch.",
+      "name": "Titanium · grok-4.6 (unverified)",
+      "description": "Same xbgst + livepatch ban stack, but models.default / fork / web_search = grok-4.6. NOT blessed — host has not been tested on Grok 4.6 yet. Use only to generate a trial patch.",
       "enabled": [
         "models.default",
         "models.web_search",
@@ -1349,6 +1363,7 @@
         "ui.fork_secondary_model",
         "features.subagents",
         "subagents.max_depth",
+        "subagents.max_concurrent",
         "plugins.enabled",
         "cli.installer",
         "marketplace.official_auto",
@@ -1387,7 +1402,8 @@
         "subagents.max_depth": 1,
         "subagents.enabled": true,
         "models.web_search": "grok-4.6",
-        "workflows.enabled": false
+        "workflows.enabled": false,
+        "subagents.max_concurrent": 64
       }
     },
     {
@@ -1470,7 +1486,7 @@
     }
   ],
   "product": "grok",
-  "productTagline": "Grok Build CLI 1.0.3 \u00b7 Titanium xbgst defaults (grok-4.5, unverified on 4.6) \u00b7 livepatch ban (general-purpose/explore + workflows) \u00b7 config at ~/.grok/config.toml \u00b7 pairs with VeigaPunk/grok-build-livepatch",
+  "productTagline": "Grok Build CLI 1.0.3 · Titanium xbgst defaults (grok-4.5, unverified on 4.6) · livepatch ban (general-purpose/explore + workflows) · config at ~/.grok/config.toml · pairs with VeigaPunk/grok-build-livepatch",
   "productTitle": "Grok Build",
   "subcommands": [
     {
@@ -1551,12 +1567,12 @@
     },
     {
       "cmd": "grok du",
-      "desc": "Show disk usage of ~/.grok (sessions, worktrees) \u2014 1.0.1+"
+      "desc": "Show disk usage of ~/.grok (sessions, worktrees) — 1.0.1+"
     },
     {
       "cmd": "grok trace",
-      "desc": "Export traces (bundles memory traces) \u2014 1.0.1+"
+      "desc": "Export traces (bundles memory traces) — 1.0.1+"
     }
   ],
-  "versionNote": "Grok Build CLI 1.0.3 (Aug 12) \u00b7 Titanium xbgst stays grok-4.5 until 4.6 is verified on this host \u00b7 4.6 is catalogued (type grok-4.6) \u00b7 livepatch-aligned"
+  "versionNote": "Grok Build CLI 1.0.3 (Aug 12) · Titanium xbgst stays grok-4.5 until 4.6 is verified on this host · 4.6 is catalogued (type grok-4.6) · livepatch-aligned"
 }
