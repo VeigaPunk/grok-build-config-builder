@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://veigapunk.github.io/grok-build-config-builder/sitemap.xml

@@ -1,0 +1,881 @@
+{
+  "product": "codex",
+  "productTitle": "Codex Titanium",
+  "productTagline": "Titanium unrestricted · Godspeed · multi_agent_v2@64 · DS4CC plugins — optimal with Sekhmet",
+  "configPath": "~/.codex/config.toml",
+  "format": "toml",
+  "versionNote": "Matches codex-titanium/titanium/config.toml · Optimal with Sekhmet https://github.com/VeigaPunk/xbrd-spark",
+  "cliFlags": [
+    {
+      "category": "Session",
+      "description": "Start interactive TUI",
+      "flag": "codex"
+    },
+    {
+      "category": "Session",
+      "description": "Headless one-shot",
+      "flag": "codex exec <PROMPT>"
+    },
+    {
+      "category": "Config",
+      "description": "Apply [profiles.NAME] overlay",
+      "flag": "--profile <NAME>"
+    },
+    {
+      "category": "Config",
+      "description": "Override any config key",
+      "flag": "-c / --config KEY=VALUE"
+    },
+    {
+      "category": "Model",
+      "description": "Model override",
+      "flag": "-m / --model <MODEL>"
+    },
+    {
+      "category": "Permissions",
+      "description": "Autonomous mode",
+      "flag": "--full-auto"
+    },
+    {
+      "category": "Permissions",
+      "description": "Sandbox override",
+      "flag": "--sandbox <MODE>"
+    },
+    {
+      "category": "Session",
+      "description": "Working directory",
+      "flag": "--cd <PATH>"
+    },
+    {
+      "category": "Headless",
+      "description": "JSON event stream (exec)",
+      "flag": "--json"
+    }
+  ],
+  "envVars": [
+    {
+      "category": "Paths",
+      "description": "Config/state home",
+      "name": "CODEX_HOME"
+    },
+    {
+      "category": "Auth",
+      "description": "API key",
+      "name": "OPENAI_API_KEY"
+    },
+    {
+      "category": "Auth",
+      "description": "Base URL override",
+      "name": "OPENAI_BASE_URL"
+    },
+    {
+      "category": "Logging",
+      "description": "Log filter",
+      "name": "RUST_LOG"
+    }
+  ],
+  "groups": [
+    {
+      "id": "core",
+      "title": "Core",
+      "description": "Model and system prompt"
+    },
+    {
+      "id": "sandbox",
+      "title": "Sandbox & approvals",
+      "description": "Sandbox mode and approval policy"
+    },
+    {
+      "id": "agents",
+      "title": "Agents & multi-agent",
+      "description": "Multi-agent v2, depth, concurrency"
+    },
+    {
+      "id": "features",
+      "title": "Features",
+      "description": "Feature flags"
+    },
+    {
+      "id": "reasoning",
+      "title": "Reasoning",
+      "description": "Effort"
+    },
+    {
+      "id": "web",
+      "title": "Web search",
+      "description": "Web search tool"
+    },
+    {
+      "id": "plugins",
+      "title": "Marketplaces & plugins",
+      "description": "DS4CC and plugin sources"
+    }
+  ],
+  "fields": [
+    {
+      "id": "model",
+      "path": "model",
+      "section": "",
+      "group": "core",
+      "label": "Model",
+      "description": "Primary model id.",
+      "type": "string",
+      "default": "gpt-5.4",
+      "recommended": true
+    },
+    {
+      "id": "model_provider",
+      "path": "model_provider",
+      "section": "",
+      "group": "core",
+      "label": "Model provider",
+      "description": "Provider id.",
+      "type": "string",
+      "default": "openai",
+      "recommended": true
+    },
+    {
+      "id": "model_reasoning_effort",
+      "path": "model_reasoning_effort",
+      "section": "",
+      "group": "reasoning",
+      "label": "Reasoning effort",
+      "description": "How hard the model thinks.",
+      "type": "enum",
+      "default": "high",
+      "options": [
+        "minimal",
+        "low",
+        "medium",
+        "high",
+        "xhigh"
+      ],
+      "recommended": true
+    },
+    {
+      "id": "approval_policy",
+      "path": "approval_policy",
+      "section": "",
+      "group": "sandbox",
+      "label": "Approval policy",
+      "description": "untrusted | on-request | never. Titanium: never.",
+      "type": "enum",
+      "default": "never",
+      "options": [
+        "untrusted",
+        "on-request",
+        "never"
+      ],
+      "recommended": true
+    },
+    {
+      "id": "sandbox_mode",
+      "path": "sandbox_mode",
+      "section": "",
+      "group": "sandbox",
+      "label": "Sandbox mode",
+      "description": "read-only | workspace-write | danger-full-access. Titanium: danger-full-access.",
+      "type": "enum",
+      "default": "danger-full-access",
+      "options": [
+        "read-only",
+        "workspace-write",
+        "danger-full-access"
+      ],
+      "recommended": true
+    },
+    {
+      "id": "base_instructions",
+      "path": "base_instructions",
+      "section": "",
+      "group": "core",
+      "label": "Base instructions (system prompt)",
+      "description": "Godspeed behavioral directive. Matches titanium/config.toml + Godspeed-enabled subagent rules. Optimal with Sekhmet.",
+      "type": "string",
+      "default": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+      "recommended": true
+    },
+    {
+      "id": "include_collaboration_mode_instructions",
+      "path": "include_collaboration_mode_instructions",
+      "section": "",
+      "group": "core",
+      "label": "Collaboration mode instructions",
+      "description": "Titanium: false.",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.multi_agent",
+      "path": "features.multi_agent",
+      "section": "features",
+      "group": "features",
+      "label": "Multi-agent",
+      "description": "Enable multi-agent orchestration.",
+      "type": "boolean",
+      "default": true,
+      "recommended": true
+    },
+    {
+      "id": "features.multi_agent_v2.enabled",
+      "path": "features.multi_agent_v2.enabled",
+      "section": "features.multi_agent_v2",
+      "group": "agents",
+      "label": "Multi-agent v2",
+      "description": "Enable multi-agent v2 (Titanium: true).",
+      "type": "boolean",
+      "default": true,
+      "recommended": true
+    },
+    {
+      "id": "features.multi_agent_v2.max_concurrent_threads_per_session",
+      "path": "features.multi_agent_v2.max_concurrent_threads_per_session",
+      "section": "features.multi_agent_v2",
+      "group": "agents",
+      "label": "Max concurrent threads",
+      "description": "Threads per session (Titanium: 64).",
+      "type": "number",
+      "default": 64,
+      "recommended": true
+    },
+    {
+      "id": "features.multi_agent_v2.expose_spawn_agent_model_overrides",
+      "path": "features.multi_agent_v2.expose_spawn_agent_model_overrides",
+      "section": "features.multi_agent_v2",
+      "group": "agents",
+      "label": "Expose spawn model overrides",
+      "description": "Allow model overrides on spawned agents.",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.multi_agent_v2.subagent_usage_hint_text",
+      "path": "features.multi_agent_v2.subagent_usage_hint_text",
+      "section": "features.multi_agent_v2",
+      "group": "agents",
+      "label": "Subagent usage hint",
+      "description": "Hint text for subagents.",
+      "type": "string",
+      "default": "Inherit only the Godspeed base directive."
+    },
+    {
+      "id": "features.multi_agent_v2.multi_agent_mode_hint_text",
+      "path": "features.multi_agent_v2.multi_agent_mode_hint_text",
+      "section": "features.multi_agent_v2",
+      "group": "agents",
+      "label": "Multi-agent mode hint",
+      "description": "Hint for multi-agent mode.",
+      "type": "string",
+      "default": "Operate as the judge: dispatch, compare, Pareto-filter, and synthesize."
+    },
+    {
+      "id": "agents.max_depth",
+      "path": "agents.max_depth",
+      "section": "agents",
+      "group": "agents",
+      "label": "Agents max depth",
+      "description": "Titanium: 1.",
+      "type": "number",
+      "default": 1,
+      "recommended": true
+    },
+    {
+      "id": "agents.job_max_runtime_seconds",
+      "path": "agents.job_max_runtime_seconds",
+      "section": "agents",
+      "group": "agents",
+      "label": "Job max runtime (s)",
+      "description": "Titanium: 1800.",
+      "type": "number",
+      "default": 1800
+    },
+    {
+      "id": "agents.interrupt_message",
+      "path": "agents.interrupt_message",
+      "section": "agents",
+      "group": "agents",
+      "label": "Interrupt message",
+      "description": "Emit interrupt message.",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.memories",
+      "path": "features.memories",
+      "section": "features",
+      "group": "features",
+      "label": "Memories",
+      "description": "Titanium hard-disables.",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.fast_mode",
+      "path": "features.fast_mode",
+      "section": "features",
+      "group": "features",
+      "label": "Fast mode",
+      "description": "Titanium: true.",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.hooks",
+      "path": "features.hooks",
+      "section": "features",
+      "group": "features",
+      "label": "Hooks",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.plugins",
+      "path": "features.plugins",
+      "section": "features",
+      "group": "features",
+      "label": "Plugins",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.shell_snapshot",
+      "path": "features.shell_snapshot",
+      "section": "features",
+      "group": "features",
+      "label": "Shell snapshot",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.skill_search",
+      "path": "features.skill_search",
+      "section": "features",
+      "group": "features",
+      "label": "Skill search",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.workspace_dependencies",
+      "path": "features.workspace_dependencies",
+      "section": "features",
+      "group": "features",
+      "label": "Workspace dependencies",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.concurrent_reasoning_summaries",
+      "path": "features.concurrent_reasoning_summaries",
+      "section": "features",
+      "group": "features",
+      "label": "Concurrent reasoning summaries",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "features.computer_use",
+      "path": "features.computer_use",
+      "section": "features",
+      "group": "features",
+      "label": "Computer use",
+      "description": "Titanium hard-disables.",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.in_app_browser",
+      "path": "features.in_app_browser",
+      "section": "features",
+      "group": "features",
+      "label": "In-app browser",
+      "description": "Titanium hard-disables.",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.standalone_web_search",
+      "path": "features.standalone_web_search",
+      "section": "features",
+      "group": "features",
+      "label": "Standalone web search",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.external_agent_memory_import",
+      "path": "features.external_agent_memory_import",
+      "section": "features",
+      "group": "features",
+      "label": "External memory import",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "features.chronicle",
+      "path": "features.chronicle",
+      "section": "features",
+      "group": "features",
+      "label": "Chronicle",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "web_search",
+      "path": "web_search",
+      "section": "",
+      "group": "web",
+      "label": "Web search",
+      "description": "disabled | cached | live. Titanium: disabled.",
+      "type": "enum",
+      "default": "disabled",
+      "options": [
+        "disabled",
+        "cached",
+        "live"
+      ]
+    },
+    {
+      "id": "marketplaces.ds4cc.source",
+      "path": "marketplaces.ds4cc.source",
+      "section": "marketplaces.ds4cc",
+      "group": "plugins",
+      "label": "DS4CC marketplace source",
+      "description": "Git URL for DS4CC marketplace (Titanium default).",
+      "type": "string",
+      "default": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+      "recommended": true
+    },
+    {
+      "id": "marketplaces.ds4cc.source_type",
+      "path": "marketplaces.ds4cc.source_type",
+      "section": "marketplaces.ds4cc",
+      "group": "plugins",
+      "label": "DS4CC source type",
+      "type": "string",
+      "default": "git"
+    },
+    {
+      "id": "plugins.xbrd-gdsp-fknpft@ds4cc.enabled",
+      "path": "plugins.xbrd-gdsp-fknpft@ds4cc.enabled",
+      "section": "plugins.\"xbrd-gdsp-fknpft@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin xbrd-gdsp-fknpft@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable xbrd-gdsp-fknpft@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.aaronplug@ds4cc.enabled",
+      "path": "plugins.aaronplug@ds4cc.enabled",
+      "section": "plugins.\"aaronplug@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin aaronplug@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable aaronplug@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.infinizoom@ds4cc.enabled",
+      "path": "plugins.infinizoom@ds4cc.enabled",
+      "section": "plugins.\"infinizoom@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin infinizoom@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable infinizoom@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.godspeed-codex-command@ds4cc.enabled",
+      "path": "plugins.godspeed-codex-command@ds4cc.enabled",
+      "section": "plugins.\"godspeed-codex-command@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin godspeed-codex-command@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable godspeed-codex-command@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.godspeed-core@ds4cc.enabled",
+      "path": "plugins.godspeed-core@ds4cc.enabled",
+      "section": "plugins.\"godspeed-core@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin godspeed-core@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable godspeed-core@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.myagents@ds4cc.enabled",
+      "path": "plugins.myagents@ds4cc.enabled",
+      "section": "plugins.\"myagents@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin myagents@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable myagents@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.mycommands@ds4cc.enabled",
+      "path": "plugins.mycommands@ds4cc.enabled",
+      "section": "plugins.\"mycommands@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin mycommands@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable mycommands@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.myskills@ds4cc.enabled",
+      "path": "plugins.myskills@ds4cc.enabled",
+      "section": "plugins.\"myskills@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin myskills@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable myskills@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.the-puppeteer@ds4cc.enabled",
+      "path": "plugins.the-puppeteer@ds4cc.enabled",
+      "section": "plugins.\"the-puppeteer@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-puppeteer@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-puppeteer@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.the-musketeer@ds4cc.enabled",
+      "path": "plugins.the-musketeer@ds4cc.enabled",
+      "section": "plugins.\"the-musketeer@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-musketeer@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-musketeer@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.the-almanacker@ds4cc.enabled",
+      "path": "plugins.the-almanacker@ds4cc.enabled",
+      "section": "plugins.\"the-almanacker@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-almanacker@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-almanacker@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.ds4cc@ds4cc.enabled",
+      "path": "plugins.ds4cc@ds4cc.enabled",
+      "section": "plugins.\"ds4cc@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin ds4cc@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable ds4cc@ds4cc from DS4CC marketplace (titanium reference)."
+    },
+    {
+      "id": "plugins.sekhmet@ds4cc.enabled",
+      "path": "plugins.sekhmet@ds4cc.enabled",
+      "section": "plugins.\"sekhmet@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin sekhmet@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable sekhmet@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.xbrd-selector@ds4cc.enabled",
+      "path": "plugins.xbrd-selector@ds4cc.enabled",
+      "section": "plugins.\"xbrd-selector@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin xbrd-selector@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable xbrd-selector@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.the-kimiraikoner@ds4cc.enabled",
+      "path": "plugins.the-kimiraikoner@ds4cc.enabled",
+      "section": "plugins.\"the-kimiraikoner@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-kimiraikoner@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-kimiraikoner@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.heuer-planning@ds4cc.enabled",
+      "path": "plugins.heuer-planning@ds4cc.enabled",
+      "section": "plugins.\"heuer-planning@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin heuer-planning@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable heuer-planning@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.spoderman@ds4cc.enabled",
+      "path": "plugins.spoderman@ds4cc.enabled",
+      "section": "plugins.\"spoderman@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin spoderman@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable spoderman@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    },
+    {
+      "id": "plugins.the-netsshark@ds4cc.enabled",
+      "path": "plugins.the-netsshark@ds4cc.enabled",
+      "section": "plugins.\"the-netsshark@ds4cc\"",
+      "group": "plugins",
+      "label": "Plugin the-netsshark@ds4cc",
+      "type": "boolean",
+      "default": true,
+      "recommended": true,
+      "description": "Enable the-netsshark@ds4cc from DS4CC marketplace (live 18-plugin catalog)."
+    }
+  ],
+  "presets": [
+    {
+      "id": "titanium",
+      "name": "Titanium (unrestricted · optimal with Sekhmet)",
+      "description": "1:1 with codex-titanium/titanium/config.toml + DS4CC plugins. Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark): never/danger-full-access, multi_agent_v2@64, Godspeed directive, full plugin stack. sekhmet swarm -j N (cap 64).",
+      "enabled": [
+        "model",
+        "approval_policy",
+        "sandbox_mode",
+        "base_instructions",
+        "include_collaboration_mode_instructions",
+        "web_search",
+        "features.multi_agent",
+        "features.memories",
+        "features.fast_mode",
+        "features.hooks",
+        "features.plugins",
+        "features.shell_snapshot",
+        "features.skill_search",
+        "features.workspace_dependencies",
+        "features.concurrent_reasoning_summaries",
+        "features.computer_use",
+        "features.in_app_browser",
+        "features.standalone_web_search",
+        "features.external_agent_memory_import",
+        "features.chronicle",
+        "features.multi_agent_v2.enabled",
+        "features.multi_agent_v2.max_concurrent_threads_per_session",
+        "features.multi_agent_v2.expose_spawn_agent_model_overrides",
+        "features.multi_agent_v2.subagent_usage_hint_text",
+        "features.multi_agent_v2.multi_agent_mode_hint_text",
+        "agents.max_depth",
+        "agents.job_max_runtime_seconds",
+        "agents.interrupt_message",
+        "marketplaces.ds4cc.source",
+        "marketplaces.ds4cc.source_type",
+        "plugins.xbrd-gdsp-fknpft@ds4cc.enabled",
+        "plugins.aaronplug@ds4cc.enabled",
+        "plugins.infinizoom@ds4cc.enabled",
+        "plugins.godspeed-codex-command@ds4cc.enabled",
+        "plugins.godspeed-core@ds4cc.enabled",
+        "plugins.myagents@ds4cc.enabled",
+        "plugins.mycommands@ds4cc.enabled",
+        "plugins.myskills@ds4cc.enabled",
+        "plugins.the-puppeteer@ds4cc.enabled",
+        "plugins.the-musketeer@ds4cc.enabled",
+        "plugins.the-almanacker@ds4cc.enabled",
+        "plugins.ds4cc@ds4cc.enabled",
+        "plugins.sekhmet@ds4cc.enabled",
+        "plugins.xbrd-selector@ds4cc.enabled",
+        "plugins.the-kimiraikoner@ds4cc.enabled",
+        "plugins.heuer-planning@ds4cc.enabled",
+        "plugins.spoderman@ds4cc.enabled",
+        "plugins.the-netsshark@ds4cc.enabled"
+      ],
+      "values": {
+        "approval_policy": "never",
+        "sandbox_mode": "danger-full-access",
+        "base_instructions": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+        "include_collaboration_mode_instructions": false,
+        "features.multi_agent": true,
+        "features.multi_agent_v2.enabled": true,
+        "features.multi_agent_v2.max_concurrent_threads_per_session": 64,
+        "features.multi_agent_v2.expose_spawn_agent_model_overrides": true,
+        "features.multi_agent_v2.subagent_usage_hint_text": "Inherit only the Godspeed base directive.",
+        "features.multi_agent_v2.multi_agent_mode_hint_text": "Operate as the judge: dispatch, compare, Pareto-filter, and synthesize.",
+        "agents.max_depth": 1,
+        "agents.job_max_runtime_seconds": 1800,
+        "agents.interrupt_message": true,
+        "features.memories": false,
+        "features.fast_mode": true,
+        "features.hooks": true,
+        "features.plugins": true,
+        "features.shell_snapshot": true,
+        "features.skill_search": true,
+        "features.workspace_dependencies": true,
+        "features.concurrent_reasoning_summaries": true,
+        "features.computer_use": false,
+        "features.in_app_browser": false,
+        "features.standalone_web_search": false,
+        "features.external_agent_memory_import": false,
+        "features.chronicle": false,
+        "web_search": "disabled",
+        "marketplaces.ds4cc.source": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+        "marketplaces.ds4cc.source_type": "git",
+        "model": "gpt-5.4",
+        "model_provider": "openai",
+        "model_reasoning_effort": "high",
+        "plugins.xbrd-gdsp-fknpft@ds4cc.enabled": true,
+        "plugins.aaronplug@ds4cc.enabled": true,
+        "plugins.infinizoom@ds4cc.enabled": true,
+        "plugins.godspeed-codex-command@ds4cc.enabled": true,
+        "plugins.godspeed-core@ds4cc.enabled": true,
+        "plugins.myagents@ds4cc.enabled": true,
+        "plugins.mycommands@ds4cc.enabled": true,
+        "plugins.myskills@ds4cc.enabled": true,
+        "plugins.the-puppeteer@ds4cc.enabled": true,
+        "plugins.the-musketeer@ds4cc.enabled": true,
+        "plugins.the-almanacker@ds4cc.enabled": true,
+        "plugins.ds4cc@ds4cc.enabled": true,
+        "plugins.sekhmet@ds4cc.enabled": true,
+        "plugins.xbrd-selector@ds4cc.enabled": true,
+        "plugins.the-kimiraikoner@ds4cc.enabled": true,
+        "plugins.heuer-planning@ds4cc.enabled": true,
+        "plugins.spoderman@ds4cc.enabled": true,
+        "plugins.the-netsshark@ds4cc.enabled": true
+      }
+    },
+    {
+      "id": "titanium-yolo",
+      "name": "Titanium YOLO",
+      "description": "YOLO alias of Titanium. Optimal with Sekhmet (https://github.com/VeigaPunk/xbrd-spark).",
+      "enabled": [
+        "model",
+        "approval_policy",
+        "sandbox_mode",
+        "base_instructions",
+        "include_collaboration_mode_instructions",
+        "web_search",
+        "features.multi_agent",
+        "features.memories",
+        "features.fast_mode",
+        "features.hooks",
+        "features.plugins",
+        "features.shell_snapshot",
+        "features.skill_search",
+        "features.workspace_dependencies",
+        "features.concurrent_reasoning_summaries",
+        "features.computer_use",
+        "features.in_app_browser",
+        "features.standalone_web_search",
+        "features.external_agent_memory_import",
+        "features.chronicle",
+        "features.multi_agent_v2.enabled",
+        "features.multi_agent_v2.max_concurrent_threads_per_session",
+        "features.multi_agent_v2.expose_spawn_agent_model_overrides",
+        "features.multi_agent_v2.subagent_usage_hint_text",
+        "features.multi_agent_v2.multi_agent_mode_hint_text",
+        "agents.max_depth",
+        "agents.job_max_runtime_seconds",
+        "agents.interrupt_message",
+        "marketplaces.ds4cc.source",
+        "marketplaces.ds4cc.source_type",
+        "plugins.xbrd-gdsp-fknpft@ds4cc.enabled",
+        "plugins.aaronplug@ds4cc.enabled",
+        "plugins.infinizoom@ds4cc.enabled",
+        "plugins.godspeed-codex-command@ds4cc.enabled",
+        "plugins.godspeed-core@ds4cc.enabled",
+        "plugins.myagents@ds4cc.enabled",
+        "plugins.mycommands@ds4cc.enabled",
+        "plugins.myskills@ds4cc.enabled",
+        "plugins.the-puppeteer@ds4cc.enabled",
+        "plugins.the-musketeer@ds4cc.enabled",
+        "plugins.the-almanacker@ds4cc.enabled",
+        "plugins.ds4cc@ds4cc.enabled",
+        "plugins.sekhmet@ds4cc.enabled",
+        "plugins.xbrd-selector@ds4cc.enabled",
+        "plugins.the-kimiraikoner@ds4cc.enabled",
+        "plugins.heuer-planning@ds4cc.enabled",
+        "plugins.spoderman@ds4cc.enabled",
+        "plugins.the-netsshark@ds4cc.enabled"
+      ],
+      "values": {
+        "approval_policy": "never",
+        "sandbox_mode": "danger-full-access",
+        "base_instructions": "# Godspeed Mode — Behavioral Directive\n\n1. Name the axes.\n2. Iterate cheap, in parallel.\n3. Keep moves that improve any axis and harm none.\n4. Don't aim — let the frontier walk itself.\n\n---\nYou are a Godspeed-enabled subagent.\nIMMEDIATELY STOP ASKING CLARIFYING QUESTIONS.\nExecute tool calls concurrently in large batches. Do not serialize what can run in parallel.\nDo not output philosophical reasoning or verbose plans. Act directly via tool calls",
+        "features.multi_agent_v2.enabled": true,
+        "features.multi_agent_v2.max_concurrent_threads_per_session": 64,
+        "features.memories": false,
+        "agents.max_depth": 1,
+        "model": "gpt-5.4",
+        "include_collaboration_mode_instructions": false,
+        "web_search": "disabled",
+        "features.multi_agent": true,
+        "features.fast_mode": true,
+        "features.hooks": true,
+        "features.plugins": true,
+        "features.shell_snapshot": true,
+        "features.skill_search": true,
+        "features.workspace_dependencies": true,
+        "features.concurrent_reasoning_summaries": true,
+        "features.computer_use": false,
+        "features.in_app_browser": false,
+        "features.standalone_web_search": false,
+        "features.external_agent_memory_import": false,
+        "features.chronicle": false,
+        "features.multi_agent_v2.expose_spawn_agent_model_overrides": true,
+        "features.multi_agent_v2.subagent_usage_hint_text": "Inherit only the Godspeed base directive.",
+        "features.multi_agent_v2.multi_agent_mode_hint_text": "Operate as the judge: dispatch, compare, Pareto-filter, and synthesize.",
+        "agents.job_max_runtime_seconds": 1800,
+        "agents.interrupt_message": true,
+        "marketplaces.ds4cc.source": "https://github.com/VeigaPunk/ds4cc-marketplace.git",
+        "marketplaces.ds4cc.source_type": "git",
+        "plugins.xbrd-gdsp-fknpft@ds4cc.enabled": true,
+        "plugins.aaronplug@ds4cc.enabled": true,
+        "plugins.infinizoom@ds4cc.enabled": true,
+        "plugins.godspeed-codex-command@ds4cc.enabled": true,
+        "plugins.godspeed-core@ds4cc.enabled": true,
+        "plugins.myagents@ds4cc.enabled": true,
+        "plugins.mycommands@ds4cc.enabled": true,
+        "plugins.myskills@ds4cc.enabled": true,
+        "plugins.the-puppeteer@ds4cc.enabled": true,
+        "plugins.the-musketeer@ds4cc.enabled": true,
+        "plugins.the-almanacker@ds4cc.enabled": true,
+        "plugins.ds4cc@ds4cc.enabled": true,
+        "plugins.sekhmet@ds4cc.enabled": true,
+        "plugins.xbrd-selector@ds4cc.enabled": true,
+        "plugins.the-kimiraikoner@ds4cc.enabled": true,
+        "plugins.heuer-planning@ds4cc.enabled": true,
+        "plugins.spoderman@ds4cc.enabled": true,
+        "plugins.the-netsshark@ds4cc.enabled": true
+      }
+    }
+  ],
+  "subcommands": [
+    {
+      "cmd": "codex",
+      "desc": "Interactive coding agent TUI"
+    },
+    {
+      "cmd": "codex exec",
+      "desc": "Non-interactive prompt execution"
+    }
+  ]
+}
