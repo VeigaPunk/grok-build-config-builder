@@ -26,6 +26,15 @@ jobs:
             echo "pages-multi missing" >&2
             exit 1
           fi
+          # SEO assets referenced by every page head must be committed — a
+          # tracked-only commit silently drops new files, so fail the deploy
+          # loudly instead of shipping og:image / sitemap 404s
+          for f in og.png robots.txt sitemap.xml; do
+            if [ ! -f "pages-multi/$f" ]; then
+              echo "pages-multi/$f missing from the committed tree — og:image/sitemap links would 404; commit it" >&2
+              exit 1
+            fi
+          done
           rm -rf dist-pages
           mkdir -p dist-pages
           cp -a pages-multi/. dist-pages/

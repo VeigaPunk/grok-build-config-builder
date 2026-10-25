@@ -10,28 +10,33 @@ export const Route = createFileRoute("/$product")({
   },
   head: ({ loaderData }) => {
     const title = loaderData?.schema.productTitle ?? loaderData?.product ?? "Config";
+    const pageTitle = `${title} Config Builder`;
+    const description =
+      loaderData?.schema.productTagline ||
+      loaderData?.schema.product_tagline ||
+      "Titanium config builder";
+    const url = `https://veigapunk.github.io/grok-build-config-builder/${loaderData?.product ?? ""}/`;
     return {
       meta: [
         {
-          title: `${title} Config Builder`,
+          title: pageTitle,
         },
         {
           name: "description",
-          content:
-            loaderData?.schema.productTagline ||
-            loaderData?.schema.product_tagline ||
-            "Titanium config builder",
+          content: description,
         },
+        { property: "og:title", content: pageTitle },
+        { property: "og:description", content: description },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: ProductPage,
   notFoundComponent: () => (
     <div className="mx-auto max-w-md px-6 py-24 text-center">
       <h1 className="text-lg font-semibold">Unknown product</h1>
-      <p className="mt-2 text-sm text-fg-muted">
-        Use /grok, /codex, or /opencode.
-      </p>
+      <p className="mt-2 text-sm text-fg-muted">Use /grok, /codex, or /opencode.</p>
       <a href="/" className="mt-6 inline-block text-sm underline">
         Back to hub
       </a>

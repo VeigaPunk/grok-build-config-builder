@@ -1486,7 +1486,7 @@
     }
   ],
   "product": "grok",
-  "productTagline": "Grok Build CLI 1.0.3 · Titanium xbgst defaults (grok-4.5, unverified on 4.6) · livepatch ban (general-purpose/explore + workflows) · config at ~/.grok/config.toml · pairs with VeigaPunk/grok-build-livepatch",
+  "productTagline": "Grok Build CLI 1.0.67 · Titanium xbgst defaults (grok-4.5, unverified on 4.6) · livepatch ban (general-purpose/explore + workflows) · config at ~/.grok/config.toml · pairs with VeigaPunk/grok-build-livepatch",
   "productTitle": "Grok Build",
   "subcommands": [
     {
@@ -1574,5 +1574,5 @@
       "desc": "Export traces (bundles memory traces) — 1.0.1+"
     }
   ],
-  "versionNote": "Grok Build CLI 1.0.3 (Aug 12) · Titanium xbgst stays grok-4.5 until 4.6 is verified on this host · 4.6 is catalogued (type grok-4.6) · livepatch-aligned"
+  "versionNote": "Grok Build CLI 1.0.67 (Oct 21) · Titanium xbgst stays grok-4.5 until 4.6 is verified on this host · 4.6 is catalogued (type grok-4.6) · livepatch-aligned"
 }

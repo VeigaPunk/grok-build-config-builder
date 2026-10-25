@@ -1,6 +1,37 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* JetBrains Mono NL Nerd Font — monospace-first identity, same stack as
+   pages-multi/static/styles.css (the GitHub Pages deploy). */
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Regular/JetBrainsMonoNLNerdFontMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Medium/JetBrainsMonoNLNerdFontMono-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/SemiBold/JetBrainsMonoNLNerdFontMono-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrainsMonoNL Nerd Font Mono";
+  src: url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@v3.3.0/patched-fonts/JetBrainsMono/NoLigatures/Bold/JetBrainsMonoNLNerdFontMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-bg: #0a0a0b;
   --color-bg-elevated: #121214;
@@ -8,9 +39,11 @@
   --color-bg-hover: #222228;
   --color-fg: #f4f4f5;
   --color-fg-muted: #a1a1aa;
-  --color-fg-subtle: #71717a;
+  /* WCAG AA on every surface it touches: 4.75:1 on bg-subtle (worst case), 5.42:1 on bg */
+  --color-fg-subtle: #85858f;
   --color-border: color-mix(in oklab, #f4f4f5 12%, transparent);
   --color-border-strong: color-mix(in oklab, #f4f4f5 22%, transparent);
+  /* Accent is deliberately neutral steel — this site's signature, not a missing accent. */
   --color-accent: #c8ccd4;
   --color-accent-fg: #0a0a0b;
   --color-success: #6ee7b7;
@@ -24,8 +57,8 @@
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
-  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --font-sans: "JetBrainsMonoNL Nerd Font Mono", "JetBrains Mono NL", ui-monospace, monospace;
+  --font-mono: "JetBrainsMonoNL Nerd Font Mono", "JetBrains Mono NL", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   --shadow-panel: 0 8px 30px color-mix(in oklab, #000 35%, transparent);
 }
 

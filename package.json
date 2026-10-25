@@ -14,6 +14,7 @@
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "check:dup": "diff -q public/schemas/grok.json pages-multi/static/schemas/grok.json && diff -q public/schemas/codex.json pages-multi/static/schemas/codex.json && diff -q public/schemas/opencode.json pages-multi/static/schemas/opencode.json && diff -q public/recommended-grok-config.toml pages-multi/static/recommended-grok-config.toml && echo 'dup assets in sync'",
     "format": "prettier --write ."
   },
   "dependencies": {

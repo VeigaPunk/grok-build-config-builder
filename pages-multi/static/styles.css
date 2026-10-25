@@ -34,9 +34,11 @@
   --bg-subtle: #1a1a1e;
   --fg: #f4f4f5;
   --fg-muted: #a1a1aa;
-  --fg-subtle: #71717a;
+  /* WCAG AA on every surface it touches: 4.75:1 on --bg-subtle (worst case), 5.42:1 on --bg */
+  --fg-subtle: #85858f;
   --border: color-mix(in oklab, var(--fg) 12%, transparent);
   --border-strong: color-mix(in oklab, var(--fg) 22%, transparent);
+  /* Accent is deliberately neutral steel — this site's signature, not a missing accent. */
   --accent: #c8ccd4;
   --accent-fg: #0a0a0b;
   --success: #6ee7b7;
@@ -352,6 +354,12 @@ main.wrap { padding-top: 24px; padding-bottom: 48px; }
   margin-top: 2px;
 }
 .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+/* Focus ring on the track: the input itself is 0x0, so the global
+   :focus-visible outline would draw on a zero-area box. */
+.switch:has(input:focus-visible) .track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .switch .track {
   position: absolute;
   inset: 0;
